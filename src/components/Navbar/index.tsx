@@ -17,16 +17,15 @@ const index = () => {
                         <div className='flex flex-col'>
                             <div className=''>
                                 <label className='font-bold text-sm'>
-                                    name sr.R
+                                    Recep Pekçetin
                                 </label>
                             </div>
                             <div className='-mt-1'>
                                 <label className='text-xs'>
-                                    name sr.R
+                                    Developer
                                 </label>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>

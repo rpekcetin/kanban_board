@@ -7,7 +7,7 @@ export interface IWorker {
 export interface ITaskCard {
     id: number,
     categoryId: number,
-    status: number,
+    status: number[] | [],
     title: string,
     mission: string,
     worker: IWorker,

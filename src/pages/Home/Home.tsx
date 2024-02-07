@@ -12,7 +12,7 @@ const Home: React.FC = () => {
           title: 'Resmi',
           image: 'resim3.jpg',
           mission: 'Blah Blah',
-          status: 2,
+          status: [2],
           startDate: new Date(),
           endDate: new Date(),
           worker: {
@@ -27,7 +27,7 @@ const Home: React.FC = () => {
           title: 'Resmi',
           image: 'resim.jpg',
           mission: 'Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah',
-          status: 2,
+          status: [2],
           startDate: new Date(),
           endDate: new Date(),
           worker: {
@@ -41,7 +41,7 @@ const Home: React.FC = () => {
           title: 'Resmi',
           image: 'resim2.jpg',
           mission: 'Blah Blah',
-          status: 2,
+          status: [2],
           startDate: new Date(),
           endDate: new Date(),
           worker: {
@@ -55,7 +55,7 @@ const Home: React.FC = () => {
           title: 'Resmi',
           image: 'resim2.jpg',
           mission: 'Blah Blah',
-          status: 2,
+          status: [2],
           startDate: new Date(),
           endDate: new Date(),
           worker: {
@@ -76,7 +76,7 @@ const Home: React.FC = () => {
           title: 'Resmi',
           image: 'resim3.jpg',
           mission: 'Blah Blah',
-          status: 2,
+          status: [2],
           startDate: new Date(),
           endDate: new Date(),
           worker: {
@@ -91,7 +91,7 @@ const Home: React.FC = () => {
           title: 'Resmi',
           image: 'resim.jpg',
           mission: 'Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah',
-          status: 2,
+          status: [2],
           startDate: new Date(),
           endDate: new Date(),
           worker: {
@@ -105,7 +105,7 @@ const Home: React.FC = () => {
           title: 'Resmi',
           image: 'resim2.jpg',
           mission: 'Blah Blah',
-          status: 2,
+          status: [2],
           startDate: new Date(),
           endDate: new Date(),
           worker: {
@@ -119,7 +119,7 @@ const Home: React.FC = () => {
           title: 'Resmi',
           image: 'resim2.jpg',
           mission: 'Blah Blah',
-          status: 2,
+          status: [2],
           startDate: new Date(),
           endDate: new Date(),
           worker: {
@@ -140,7 +140,7 @@ const Home: React.FC = () => {
           title: 'Resmi',
           image: 'resim3.jpg',
           mission: 'Blah Blah',
-          status: 2,
+          status: [3],
           startDate: new Date(),
           endDate: new Date(),
           worker: {
@@ -155,7 +155,7 @@ const Home: React.FC = () => {
           title: 'Resmi',
           image: 'resim.jpg',
           mission: 'Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah',
-          status: 2,
+          status: [1],
           startDate: new Date(),
           endDate: new Date(),
           worker: {
@@ -169,7 +169,7 @@ const Home: React.FC = () => {
           title: 'Resmi',
           image: 'resim2.jpg',
           mission: 'Blah Blah',
-          status: 2,
+          status: [2],
           startDate: new Date(),
           endDate: new Date(),
           worker: {
@@ -183,7 +183,7 @@ const Home: React.FC = () => {
           title: 'Resmi',
           image: 'resim2.jpg',
           mission: 'Blah Blah',
-          status: 2,
+          status: [2],
           startDate: new Date(),
           endDate: new Date(),
           worker: {
@@ -204,7 +204,7 @@ const Home: React.FC = () => {
           title: 'Resmi',
           image: 'resim3.jpg',
           mission: 'Blah Blah',
-          status: 2,
+          status: [2],
           startDate: new Date(),
           endDate: new Date(),
           worker: {
@@ -219,7 +219,7 @@ const Home: React.FC = () => {
           title: 'Resmi',
           image: 'resim.jpg',
           mission: 'Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah',
-          status: 2,
+          status: [2],
           startDate: new Date(),
           endDate: new Date(),
           worker: {
@@ -233,7 +233,7 @@ const Home: React.FC = () => {
           title: 'Resmi',
           image: 'resim2.jpg',
           mission: 'Blah Blah',
-          status: 2,
+          status: [2],
           startDate: new Date(),
           endDate: new Date(),
           worker: {
@@ -247,7 +247,7 @@ const Home: React.FC = () => {
           title: 'Resmi',
           image: 'resim2.jpg',
           mission: 'Blah Blah',
-          status: 2,
+          status: [2],
           startDate: new Date(),
           endDate: new Date(),
           worker: {
