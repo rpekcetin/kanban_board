@@ -9,11 +9,11 @@ const index = () => {
                         Projects
                     </label>
                 </div>
-                <div className='basis-2/12 gap-x-4 flex flex-row justify-end items-center'>
-                    <div className='basis-3/12 flex'>
-                        <img src='./image/profile.jpg' alt='profile' className='w-14 h-14 radius-full text-center bg-red-500'/>
+                <div className='basis-9/12 gap-x-4 flex flex-row justify-end items-center'>
+                    <div className=' flex'>
+                        <img src='./image/profile.jpg' alt='profile' className='w-14 h-14 radius-full text-center bg-red-500' />
                     </div>
-                    <div className='basis-4/12'>
+                    <div>
                         <div className='flex flex-col'>
                             <div className=''>
                                 <label className='font-bold text-sm'>
