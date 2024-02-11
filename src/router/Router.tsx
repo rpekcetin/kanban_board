@@ -1,8 +1,8 @@
 import { useRoutes } from 'react-router-dom'
 import { lazy } from 'react'
 
-const Home = lazy(() => import('../pages/Home/Home'))
-
+const Home = lazy(() => import('../pages/Home'))
+const Panel = lazy(() => import('../pages/Panel'))
 import Layout from '../layout/Layout'
 
 function Router() {
@@ -10,7 +10,8 @@ function Router() {
     {
       element: <Layout />,
       children: [
-        { path: '/', element: <Home /> },
+        { path: '/', element: <Panel /> },
+        { path: '/:id', element: <Home /> },
       ],
     },
   ])

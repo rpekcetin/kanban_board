@@ -141,7 +141,7 @@ const initialState = {
         },
         {
             id: 3,
-            name: 'Complate',
+            name: 'Complete',
             data: [
                 {
                     categoryId: 3,
@@ -297,16 +297,6 @@ const HomeSlice = createSlice({
             const updatedCategories: any = action.payload;
             state.tasks = updatedCategories;
         },
-        // updateTasksMove: (state, action) => {
-        //     const { fromCategoryId, toCategoryId, fromIndex, toIndex } = action.payload;
-        //     const fromCategory = state.tasks.find(category => category.id === fromCategoryId);
-        //     const toCategory = state.tasks.find(category => category.id === toCategoryId);
-        //     if (!fromCategory || !toCategory) return;
-        //     const taskMoving = fromCategory.data[fromIndex];
-        //     if (!taskMoving) return;
-        //     fromCategory.data.splice(fromIndex, 1);
-        //     toCategory.data.splice(toIndex, 0, taskMoving);
-        // },
         deleteTasks: (state, action) => {
             state.tasks = [...state.tasks.filter((el: any) => el.id !== action.payload)]
         }

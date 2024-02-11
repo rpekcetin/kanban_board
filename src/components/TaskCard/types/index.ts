@@ -1,5 +1,8 @@
-import { ITaskCard } from "../../../pages/Home/types";
+import { ITaskCard } from "../../../pages/Home/types"
+
 
 export interface TaskCardProps {
-    task: ITaskCard
+    task?: ITaskCard
+    isMenu?: boolean
+    children?: React.ReactNode
 }

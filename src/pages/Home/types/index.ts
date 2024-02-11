@@ -1,22 +1,21 @@
 export interface IWorker {
-    id: number,
-    name: string,
-    image: string,
+    id?: number,
+    name?: string,
+    image?: string,
 }
 
 export interface ITaskCard {
-    id: number,
-    categoryId: number,
-    position: number,
-    status: number[] | [],
-    title: string,
-    mission: string,
-    worker: IWorker,
-    image: string,
-    startDate: Date,
-    endDate: Date
+    id?: number,
+    categoryId?: number,
+    position?: number,
+    status?: number[] | [],
+    title?: string,
+    mission?: string,
+    worker?: IWorker,
+    image?: string,
+    startDate?: Date,
+    endDate?: Date
 }
-
 export interface ICategories {
     id: number,
     name: string,

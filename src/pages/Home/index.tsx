@@ -2,10 +2,12 @@ import { ICategories, ITaskCard } from "./types"
 import TaskCard from '../../components/TaskCard'
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd"
 import { useState } from "react"
-import Modal from "../../components/Modal"
-import DropDown from "../../components/DropDown"
 import { useDispatch, useSelector } from "react-redux"
 import { HomeTypes } from "./store/types"
+import moment from "moment"
+import Button from '../../components/Button'
+import { ClockIcon } from "@heroicons/react/24/outline"
+
 const Home: React.FC = () => {
   const dispatch = useDispatch()
   const categories: any = useSelector((state: any) => state?.HomeSlice?.tasks)
@@ -86,7 +88,37 @@ const Home: React.FC = () => {
                             {...provided.draggableProps}
                             ref={provided.innerRef}
                           >
-                            <TaskCard task={task} />
+                            <TaskCard isMenu={true} task={task} >
+                              <>
+                                <div className={`mt-4`}>
+                                  {
+                                    task?.status?.map((stats: number, index: number) => (
+                                      <div key={`status-button-${index}`}>
+                                        <Button
+                                          stats={stats}
+                                        />
+                                      </div>
+                                    ))
+                                  }
+                                </div>
+                                <div className={`w-full mt-3`}>
+                                  <div className='w-full'>
+                                    <div className="bg-no-repeat rounded-lg bg-cover bg-bottom w-full h-44" style={{ backgroundImage: `url('/image/example-1.webp')` }} />
+                                  </div>
+                                </div>
+                                <div className='mt-5 w-full flex flex-row items-center justify-between'>
+                                  <div className=''>
+                                    <div className="bg-no-repeat rounded-full bg-cover w-11 h-11" style={{ backgroundImage: `url('/image/profile.jpg')` }} />
+                                  </div>
+                                  <div className={`gap-1 flex items-center justify-end`}>
+                                    <ClockIcon className='h-6 w-6 stroke-gray-600' />
+                                    <p className='text-sm text-gray-600 font-semibold'>
+                                      {`${moment(task.endDate).format('DD')}-${moment(task.startDate).format('DD')} ${moment(task.endDate).format('MMM')}`}
+                                    </p>
+                                  </div>
+                                </div>
+                              </>
+                            </TaskCard>
                           </div>
                         )}
                       </Draggable>

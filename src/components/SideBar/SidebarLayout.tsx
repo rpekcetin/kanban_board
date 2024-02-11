@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { FireIcon } from '@heroicons/react/24/solid'
 import { HomeIcon, UserIcon } from '@heroicons/react/24/outline'
+import { NavigateFunction, useNavigate } from 'react-router-dom';
 interface MenuItems {
   name: string
   route: string
@@ -8,18 +9,13 @@ interface MenuItems {
 }
 
 const SidebarLayout: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const navigate: NavigateFunction = useNavigate()
   const menuItems: MenuItems[] = [
     {
       name: 'Home',
       route: '/',
       icons: <HomeIcon className='h-8 w-8 stroke-gray-700 group-hover:stroke-emerald-500' />
     },
-    {
-      name: 'Profil',
-      route: '/profile',
-      icons: <UserIcon className='h-8 w-8 stroke-gray-700 group-hover:stroke-emerald-500' />
-    }
   ]
   return (
     <div className="flex px-6 py-4 h-screen">
@@ -30,16 +26,11 @@ const SidebarLayout: React.FC = () => {
           </label>
         </div>
         {menuItems.map((data, index) => (
-          <div className='group px-3 py-5 cursor-pointer hover:bg-emerald-50' key={`menu-items-${index}`}>
+          <div onClick={() => navigate(data.route)} className='group px-3 py-5 cursor-pointer hover:bg-emerald-50' key={`menu-items-${index}`}>
             <div className='flex flex-row items-center justify-center text-center'>
               <div className='cursor-pointer'>
                 <label className='group-hover:color-yellow-200 cursor-pointer'>
                   {data.icons}
-                </label>
-              </div>
-              <div className={`${isOpen ? '' : 'hidden'} ml-5`}>
-                <label className='cursor-pointer'>
-                  {data.name}
                 </label>
               </div>
             </div>
