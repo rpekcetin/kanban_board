@@ -13,5 +13,5 @@ export const store = configureStore({
 sagaMiddleware.run(rootSaga)
 
 export const application = {
-  api: "https://api.example.com",
+  api: "http://localhost:3005",
 };

@@ -2,7 +2,8 @@ import { createSlice } from '@reduxjs/toolkit'
 import moment from 'moment'
 
 const initialState = {
-    tasks: [
+    tasks: [],
+    tasksFake: [
         {
             id: 1,
             name: 'Open',
@@ -284,18 +285,18 @@ const HomeSlice = createSlice({
         getTasks: (state, action) => {
             state.tasks = action.payload
         },
-        postTasks: (state, action) => {
+        postTasks: (state: any, action) => {
             state.tasks = [action.payload, ...state.tasks]
         },
-        updateTasks: (state, action) => {
+        updateTasks: (state: any, action: any) => {
             const tasksIndex = state.tasks.findIndex(
-                (el) => el.id === action.payload.id
+                (el: any) => el.id === action.payload.id
             )
             state.tasks[tasksIndex] = action.payload
         },
         updateTasksMove: (state, action: any) => {
             const updatedCategories: any = action.payload;
-            state.tasks = updatedCategories;
+            state.tasksFake = updatedCategories;
         },
         deleteTasks: (state, action) => {
             state.tasks = [...state.tasks.filter((el: any) => el.id !== action.payload)]

@@ -1,12 +1,15 @@
 import React from 'react'
+import { useParams } from 'react-router-dom'
 
 const index = () => {
+    const { id } = useParams()
+
     return (
         <div className="flex w-full pr-6 py-4">
             <div className='px-5 py-3 h-min bg-white rounded-md w-full flex justify-between items-center flex-row'>
                 <div className='basis-3/12 flex items-center'>
                     <label className='text-center text-gray-800 text-2xl font-bold'>
-                        Projects
+                        {id ? 'Project' : 'Panels'}
                     </label>
                 </div>
                 <div className='basis-9/12 gap-x-4 flex flex-row justify-end items-center'>
@@ -22,7 +25,7 @@ const index = () => {
                             </div>
                             <div className='-mt-1'>
                                 <label className='text-xs'>
-                                    Developer
+                                   FrontEnd Developer
                                 </label>
                             </div>
                         </div>

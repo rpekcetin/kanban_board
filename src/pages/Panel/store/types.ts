@@ -4,3 +4,5 @@ export const PanelTypes = {
     UPDATE_PANELS: "UPDATE_PANELS",
     DELETE_PANELS: "DELETE_PANELS"
 };
+
+export type PanelActionTypes = typeof PanelTypes[keyof typeof PanelTypes];

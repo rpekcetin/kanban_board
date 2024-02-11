@@ -1,4 +1,4 @@
-import { ITaskCard } from "../../../pages/Home/types"
+import { ITaskCard } from "../../../pages/Home/types/types"
 
 
 export interface TaskCardProps {

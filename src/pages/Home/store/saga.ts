@@ -1,19 +1,19 @@
 import { call, put, takeEvery, all, select } from 'redux-saga/effects';
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
-//import { Task } from './path/to/your/models'; // Task modelinizin gerçek yolu
 import { application } from '../../../redux/store';
-import { HomeTypes } from './types';
+import { HomeActionTypes, HomeTypes } from './types';
 import { toast } from 'react-hot-toast';
-import { getTasks, updateTasks, updateTasksMove } from './slice';
-import { useSelector } from 'react-redux';
+import { getTasks, updateTasksMove } from './slice';
+import { IPostTasks, IUpdateMoveTasks } from '../types/types';
 
-function* getTasksHandler({ payload }: any) {
+function* getTasksHandler(action: IPostTasks) {
     try {
         const response: AxiosResponse<{ data: any[] }> = yield call(() =>
-            axios.get(`${application.api}/tasks`)
+            axios.get(`${application.api}/task/${action?.payload?.id}`)
         );
 
         yield put(getTasks(response.data.data));
+        toast.success('Görevler Başarıyla Getirildi')
     } catch (error: any) {
         if (error.response && error.response.data && error.response.data.message) {
             toast.error(error.response.data.message);
@@ -23,18 +23,18 @@ function* getTasksHandler({ payload }: any) {
     }
 }
 
-function* updateTaskHandler({ payload }: any) {
+function* updateTaskHandler(action: IUpdateMoveTasks) {
     try {
-        const categories: any[] = yield select(state => state.HomeSlice.tasks);
+        const categories: any[] = yield select(state => state.HomeSlice.tasksFake);
         const newCategories: any = JSON.parse(JSON.stringify(categories));
-        const fromCategoryIndex = newCategories.findIndex((category: any) => category.id === payload.fromCategoryId);
-        const toCategoryIndex = newCategories.findIndex((category: any) => category.id === payload.toCategoryId);
+        const fromCategoryIndex = newCategories.findIndex((category: any) => category.id === action.payload.fromCategoryId);
+        const toCategoryIndex = newCategories.findIndex((category: any) => category.id === action.payload.toCategoryId);
         const fromCategory = newCategories[fromCategoryIndex];
         const toCategory = newCategories[toCategoryIndex];
 
         if (fromCategory && toCategory) {
-            const taskMoving = fromCategory.data.splice(payload.fromIndex, 1)[0];
-            toCategory.data.splice(payload.toIndex, 0, taskMoving);
+            const taskMoving = fromCategory.data.splice(action.payload.fromIndex, 1)[0];
+            toCategory.data.splice(action.payload.toIndex, 0, taskMoving);
             [fromCategory, toCategory].forEach(category => {
                 category.data.forEach((task: any, index: any) => {
                     task.position = index + 1;
@@ -52,13 +52,29 @@ function* updateTaskHandler({ payload }: any) {
     }
 }
 
+function* deleteTasksHandler(action: IPostTasks) {
+    try {
+        const response: AxiosResponse = yield call(axios.delete, `${application.api}/task/${action?.payload?.id}`)
+        yield put(getTasks(response.data.data));
+        toast.success('Görevler Başarıyla Getirildi')
+    } catch (error: any) {
+        if (error.response && error.response.data && error.response.data.message) {
+            toast.error(error.response.data.message);
+        } else {
+            toast.error('Bilinmeyen Bir Hata ile Karşılaşıldı !');
+        }
+    }
+}
+
+
 export function* HomeSagas() {
     yield all([
         takeEvery(
-            HomeTypes.GET_TASKS, getTasksHandler
+            HomeTypes.GET_TASKS as HomeActionTypes, getTasksHandler
         ),
+        takeEvery(HomeTypes.DELETE_TASKS as HomeActionTypes, deleteTasksHandler),
         takeEvery(
-            HomeTypes.UPDATE_TASKS, updateTaskHandler
+            HomeTypes.UPDATE_TASKS as HomeActionTypes, updateTaskHandler
         )
     ])
 }

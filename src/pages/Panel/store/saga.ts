@@ -1,19 +1,19 @@
 import { call, put, takeEvery, all, select } from 'redux-saga/effects';
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
-//import { Task } from './path/to/your/models'; // Task modelinizin gerçek yolu
+import axios, { AxiosResponse } from 'axios';
 import { application } from '../../../redux/store';
-import { PanelTypes } from './types';
+import { PanelActionTypes, PanelTypes } from './types';
 import { toast } from 'react-hot-toast';
-import { useSelector } from 'react-redux';
-import { getPanels } from './slice';
+import { deletePanels, getPanels, postPanels, updateLoaded } from './slice';
+import { INewPanelPayload } from '../types/types';
 
 function* getPanelsHandler({ payload }: any) {
     try {
+        yield put(updateLoaded(false))
         const response: AxiosResponse<{ data: any[] }> = yield call(() =>
-            axios.get(`${application.api}/tasks`)
+            axios.get(`${application.api}/panel`)
         );
-
-        yield put(getPanels(response.data.data));
+        yield put(getPanels(response.data));
+        yield put(updateLoaded(true))
     } catch (error: any) {
         if (error.response && error.response.data && error.response.data.message) {
             toast.error(error.response.data.message);
@@ -23,10 +23,11 @@ function* getPanelsHandler({ payload }: any) {
     }
 }
 
-function* createPanelsHandler({ payload }: any) {
+function* createPanelsHandler(action: INewPanelPayload) {
     try {
-        const response: AxiosResponse = yield call(axios.post, 'YOUR_BACKEND_ENDPOINT', { payload });
-        //yield put(updateTasksMove(newCategories));
+        const response: AxiosResponse = yield call(axios.post, `${application.api}/panel/post`, { name: action.payload.name });
+        toast.success('Yeni Panel Başarı ile Eklendi')
+        yield put(postPanels(response.data));
     } catch (error: any) {
         if (error.response && error.response.data && error.response.data.message) {
             toast.error(error.response.data.message);
@@ -37,10 +38,11 @@ function* createPanelsHandler({ payload }: any) {
 }
 
 
-function* updatePanelsHandler({ payload }: any) {
+function* deletePanelsHandler(action: any) {
     try {
-        const response: AxiosResponse = yield call(axios.put, 'YOUR_BACKEND_ENDPOINT', { payload });
-        //yield put(updateTasksMove(newCategories));
+        const response: AxiosResponse = yield call(axios.delete, `${application.api}/panel/delete/${action?.payload?._id}`);
+        yield put(deletePanels(action.payload._id));
+        toast.success('Panel Başarılı Bir Şekilde Silindi')
     } catch (error: any) {
         if (error.response && error.response.data && error.response.data.message) {
             toast.error(error.response.data.message);
@@ -53,13 +55,13 @@ function* updatePanelsHandler({ payload }: any) {
 export function* PanelSagas() {
     yield all([
         takeEvery(
-            PanelTypes.GET_PANELS, getPanelsHandler
+            PanelTypes.GET_PANELS as PanelActionTypes, getPanelsHandler
         ),
         takeEvery(
-            PanelTypes.POST_PANELS, createPanelsHandler
+            PanelTypes.POST_PANELS as PanelActionTypes, createPanelsHandler
         ),
         takeEvery(
-            PanelTypes.DELETE_PANELS, updatePanelsHandler
+            PanelTypes.DELETE_PANELS as PanelActionTypes, deletePanelsHandler
         )
     ])
 }

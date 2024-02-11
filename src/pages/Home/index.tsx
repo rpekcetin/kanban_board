@@ -1,41 +1,60 @@
-import { ICategories, ITaskCard } from "./types"
+import { ICategories, ITaskCard } from "./types/types"
 import TaskCard from '../../components/TaskCard'
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { HomeTypes } from "./store/types"
 import moment from "moment"
 import Button from '../../components/Button'
 import { ClockIcon } from "@heroicons/react/24/outline"
-
+import Modal from "../../components/Modal"
+import Input from '../../components/Input'
+import { useFormik } from "formik"
+import * as Yup from 'yup'
+import { useParams } from "react-router-dom"
 const Home: React.FC = () => {
   const dispatch = useDispatch()
-  const categories: any = useSelector((state: any) => state?.HomeSlice?.tasks)
-  const [category, setCategory] = useState(categories)
+  const { id } = useParams()
+  const [modal, setModal] = useState<boolean>(false)
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(null)
+  const categories: any = useSelector((state: any) => state?.HomeSlice?.tasksFake)
+
+  useEffect(() => {
+    dispatch({
+      type: HomeTypes.GET_TASKS,
+      payload: {
+        id
+      }
+    })
+  }, [id])
+
+
+  const validationSchema = Yup.object({
+    title: Yup.string().required('Lütfen Başlık Giriniz !')
+  })
+
+  const formik: any = useFormik({
+    initialValues: {
+      title: '',
+      mission: '',
+      categoryId: '',
+    },
+    validationSchema,
+    onSubmit: (values) => {
+      dispatch({
+        type: HomeTypes.POST_TASKS,
+        payload: values
+      })
+    }
+  })
+
   const handleDropDrag = (event: any) => {
     const fromCategoryId: number | undefined = Number(event.source.droppableId.replace('task-drop-', ''));
     const toCategoryId: number | undefined = Number(event.destination?.droppableId.replace('task-drop-', ''));
     const fromIndex: number | undefined = event.source.index;
     const toIndex: number | undefined = event.destination?.index;
-    const newList: any = []
 
     if (typeof toCategoryId === 'undefined' || typeof toIndex === 'undefined' || typeof fromIndex === 'undefined') return
-    setCategory((prevCategories: ICategories[]) => {
-      const fromCategory: any = prevCategories.find(category => category.id === fromCategoryId);
-      const taskMoving = fromCategory?.data[fromIndex];
-      if (!taskMoving) {
-        return prevCategories;
-      }
-      const newCategories: any = prevCategories.map((category: any) => ({
-        ...category,
-        data: category.data.filter((el: any, index: number) => category.id !== fromCategoryId || index !== fromIndex), // Eski konumdan kartı çıkar
-      }));
-      const categoryIndex = newCategories.findIndex((category: any) => category.id === toCategoryId);
-      if (categoryIndex !== -1) {
-        newCategories[categoryIndex].data.splice(toIndex, 0, { ...taskMoving, categoryId: toCategoryId });
-      }
-      return newCategories;
-    });
     dispatch({
       type: HomeTypes.UPDATE_TASKS,
       payload: {
@@ -45,29 +64,10 @@ const Home: React.FC = () => {
         toIndex
       }
     })
-    categories.map((data: any, index: number) => {
-      newList.push({
-        id: data.id,
-        name: data.name,
-        data: [
-          ...data.data.map((dataTask: any, index: number) => {
-            return ({
-              ...dataTask,
-              position: index + 1
-            })
-          })
-        ]
-      })
-    })
-    console.log(newList)
-
-
   };
 
   return (
     <div className="flex flex-row gap-4 pr-6 relative py-4 h-full">
-      {/* <Modal />
-      <DropDown /> */}
       <DragDropContext onDragEnd={(e) => handleDropDrag(e)}>
         {categories?.map((category: ICategories, categoryIndex: number) => (
           <Droppable droppableId={`task-drop-${category.id}`} key={`categories-${categoryIndex}`}>
@@ -87,9 +87,10 @@ const Home: React.FC = () => {
                             {...provided.dragHandleProps}
                             {...provided.draggableProps}
                             ref={provided.innerRef}
+
                           >
                             <TaskCard isMenu={true} task={task} >
-                              <>
+                              <div className={`px-4`}>
                                 <div className={`mt-4`}>
                                   {
                                     task?.status?.map((stats: number, index: number) => (
@@ -106,7 +107,7 @@ const Home: React.FC = () => {
                                     <div className="bg-no-repeat rounded-lg bg-cover bg-bottom w-full h-44" style={{ backgroundImage: `url('/image/example-1.webp')` }} />
                                   </div>
                                 </div>
-                                <div className='mt-5 w-full flex flex-row items-center justify-between'>
+                                <div className='mt-5 pb-4 w-full flex flex-row items-center justify-between'>
                                   <div className=''>
                                     <div className="bg-no-repeat rounded-full bg-cover w-11 h-11" style={{ backgroundImage: `url('/image/profile.jpg')` }} />
                                   </div>
@@ -117,13 +118,23 @@ const Home: React.FC = () => {
                                     </p>
                                   </div>
                                 </div>
-                              </>
+                              </div>
                             </TaskCard>
                           </div>
                         )}
                       </Draggable>
                     ))}
                     {provided.placeholder}
+                  </div>
+                  <div>
+                    <Button
+                      onClick={() => {
+                        setModal(!modal)
+                        setSelectedCategory(category.id)
+                      }}
+                      name="Yeni Kart Ekle"
+                      classes="cursor-pointer w-full py-5 border-dashed border-2 rounded-md border-gray-400 "
+                    />
                   </div>
                 </div>
               </div>
@@ -132,7 +143,34 @@ const Home: React.FC = () => {
         ))
         }
       </DragDropContext >
-
+      <Modal
+        title='Yeni Görev Ekle'
+        modal={modal}
+        setModal={setModal}
+        successTitle='Ekle'
+        onSubmit={formik.handleSubmit}
+      >
+        <div className="grid grid-cols-2 gap-x-5">
+          <div className=''>
+            <Input label='Görev Adı' type="text" name='name' invalid={formik.errors.name ? true : false && formik.touched.name} error={formik.errors.name} onChange={formik.handleChange} />
+          </div>
+          <div className=''>
+            <Input label='Açıklama' type="textarea" name='mission' invalid={formik.errors.name ? true : false && formik.touched.name} error={formik.errors.name} onChange={formik.handleChange} />
+          </div>
+          <div className=''>
+            <Input label='Görev Başlangıç' type="date" name='startDate' invalid={formik.errors.name ? true : false && formik.touched.name} error={formik.errors.name} onChange={formik.handleChange} />
+          </div>
+          <div className=''>
+            <Input label='Görev Bitiş' type="date" name='endDate' invalid={formik.errors.name ? true : false && formik.touched.name} error={formik.errors.name} onChange={formik.handleChange} />
+          </div>
+          <div className=''>
+            <Input label='Görev Türü' name='state' invalid={formik.errors.name ? true : false && formik.touched.name} error={formik.errors.name} onChange={formik.handleChange} />
+          </div>
+          <div className=''>
+            <Input label='Ek Resim' type="file" name='image' invalid={formik.errors.name ? true : false && formik.touched.name} error={formik.errors.name} onChange={formik.handleChange} />
+          </div>
+        </div>
+      </Modal>
     </div >
   )
 }

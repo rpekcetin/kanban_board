@@ -1,11 +1,16 @@
-import React, { useState } from 'react'
+import { useEffect, useState } from 'react'
 import TaskCard from '../../components/TaskCard'
-import { PlusIcon } from '@heroicons/react/24/outline'
+import { PlusIcon, TrashIcon } from '@heroicons/react/24/outline'
 import Modal from '../../components/Modal'
 import Input from '../../components/Input'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { NavigateFunction, useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { Dispatch } from 'redux'
+import { PanelTypes } from './store/types'
+import { ISelectorType } from '../../types/types'
+import { toast } from 'react-hot-toast'
 
 interface IFormik {
   name: string
@@ -13,26 +18,51 @@ interface IFormik {
 
 const index = () => {
   const [modal, setModal] = useState<boolean>(false)
+  const dispatch: Dispatch<any> = useDispatch()
   const navigation: NavigateFunction = useNavigate()
+  const { panels, isLoaded } = useSelector((state: ISelectorType) => state.PanelSlice)
+
+  useEffect(() => {
+    dispatch({
+      type: PanelTypes.GET_PANELS
+    })
+  }, [0])
+
   const validationSchema: any = Yup.object({
     name: Yup.string().required('Lütfen ad giriniz!')
   })
+
   const formik = useFormik<IFormik>({
     initialValues: {
       name: ''
     },
     validationSchema,
     onSubmit: (values) => {
-      console.log(values)
+      dispatch({
+        type: PanelTypes.POST_PANELS,
+        payload: {
+          name: values.name
+        }
+      })
+      formik.resetForm()
+      setModal(!modal)
     }
   })
-  console.log(formik.errors.name)
-  console.log(formik.touched.name)
+
+  const handleDelete = (_id: number) => {
+    dispatch({
+      type: PanelTypes.DELETE_PANELS,
+      payload: {
+        _id
+      }
+    })
+  }
+
   return (
     <div className="grid mr-5 gap-4 grid-cols-5">
       <div className='cursor-pointer' onClick={() => setModal(!modal)}>
         <TaskCard>
-          <div className='flex gap-2 items-center justify-center w-full h-full text-center mt-5 mb-10'>
+          <div className='flex gap-2 items-center justify-center w-full h-full text-center pt-10 pb-10'>
             <label className='cursor-pointer text-lg font-bold'>
               Yeni Panel Ekle
             </label>
@@ -40,15 +70,20 @@ const index = () => {
           </div>
         </TaskCard>
       </div>
-      <div className='cursor-pointer' onClick={() => navigation(`/${1}`)}>
-        <TaskCard>
-          <div className='w-full h-full text-center mt-5 mb-10'>
-            <label className='cursor-pointer text-center text-lg font-bold uppercase'>
-              Test
-            </label>
+      {
+        panels?.map((data: any, index: number) => (
+          <div className='cursor-pointer' key={`panel-card-${index}`}>
+            <TaskCard>
+              <TrashIcon onClick={() => handleDelete(data._id)} className='h-5 w-5 absolute stroke-red-500 top-3 right-3 cursor-pointer z-2' />
+              <div onClick={() => navigation(`/${data._id}`)} className='w-full h-full text-center pt-10 pb-10'>
+                <label className='cursor-pointer text-center text-lg font-bold uppercase'>
+                  {data.name}
+                </label>
+              </div>
+            </TaskCard>
           </div>
-        </TaskCard>
-      </div>
+        ))
+      }
       <Modal
         title='Yeni Panel Ekle'
         modal={modal}

@@ -1,8 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-    panels: [
-    ],
+    panels: [],
+    isLoaded: false
 }
 const PanelSlice = createSlice({
     name: 'tasks',
@@ -12,16 +12,23 @@ const PanelSlice = createSlice({
             state.panels = action.payload
         },
         postPanels: (state: any, action: any) => {
-            state.panels = [...action.payload, ...state.panels]
+            state.panels = [action.payload, ...state.panels]
         },
         deletePanels: (state, action) => {
-            state.panels = [...state.panels.filter((el: any) => el.id !== action.payload)]
-        }
+            state.panels = [...state.panels.filter((el: any) => el._id !== action.payload)]
+        },
+        updateLoaded: (state: any, action: {
+            payload: boolean;
+            type: string;
+        }) => {
+            state.isLoaded = action.payload
+        },
     },
 })
 export const {
     getPanels,
     postPanels,
-    deletePanels
+    deletePanels,
+    updateLoaded
 } = PanelSlice.actions
 export default PanelSlice.reducer
