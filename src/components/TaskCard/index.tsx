@@ -3,7 +3,7 @@ import { TaskCardProps } from './types'
 import { ArrowPathIcon, EllipsisHorizontalIcon, TrashIcon } from '@heroicons/react/24/outline'
 import { Action, DropDown, Item } from '../DropDown'
 
-const index: React.FC<TaskCardProps> = ({ task, isMenu = false, children }) => {
+const index: React.FC<TaskCardProps> = ({ task, isMenu = false, children, modal, setModal }) => {
     const [show, setShow] = useState<boolean>(false)
     return (
         <div className={`relative shadow-md flex-1 bg-white rounded`}>

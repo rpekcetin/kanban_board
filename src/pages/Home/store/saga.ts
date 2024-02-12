@@ -9,10 +9,9 @@ import { IDeleteTasks, IGetTasks, IPostTasks, IUpdateMoveTasks } from '../types/
 function* getTasksHandler(action: IGetTasks) {
     try {
         const response: AxiosResponse<{ data: any[] }> = yield call(() =>
-            axios.get(`${application.api}/task/${action?.payload?.id}`)
+            axios.get(`${application.api}/category/${action?.payload?.id}`)
         );
-
-        yield put(getTasks(response.data.data));
+        yield put(getTasks(response.data));
         toast.success('Görevler Başarıyla Getirildi')
     } catch (error: any) {
         if (error.response && error.response.data && error.response.data.message) {

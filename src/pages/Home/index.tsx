@@ -1,12 +1,12 @@
 import { ICategories, ITaskCard } from "./types/types"
 import TaskCard from '../../components/TaskCard'
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd"
-import { ChangeEvent, useEffect, useState } from "react"
+import { ChangeEvent, useEffect, useRef, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { HomeTypes } from "./store/types"
 import moment from "moment"
 import Button from '../../components/Button'
-import { ClockIcon } from "@heroicons/react/24/outline"
+import { ClockIcon, PlusIcon } from "@heroicons/react/24/outline"
 import Modal from "../../components/Modal"
 import Input from '../../components/Input'
 import { useFormik } from "formik"
@@ -16,9 +16,10 @@ import { DropDown, Item } from "../../components/DropDown"
 const Home: React.FC = () => {
   const dispatch = useDispatch()
   const { id } = useParams()
+  const imageRef = useRef<HTMLInputElement>(null)
   const [modal, setModal] = useState<boolean>(false)
-  const [show, setShow] = useState<boolean>(false)
-  const categories: any = useSelector((state: any) => state?.HomeSlice?.tasksFake)
+  const [selectedImage, setSelectedImage] = useState<string | null>(null)
+  const categories: any = useSelector((state: any) => state?.HomeSlice?.tasks)
 
   useEffect(() => {
     dispatch({
@@ -85,7 +86,7 @@ const Home: React.FC = () => {
     <div className="flex flex-row gap-4 pr-6 relative py-4 h-full">
       <DragDropContext onDragEnd={(e) => handleDropDrag(e)}>
         {categories?.map((category: ICategories, categoryIndex: number) => (
-          <Droppable droppableId={`task-drop-${category.id}`} key={`categories-${categoryIndex}`}>
+          <Droppable droppableId={`task-drop-${category._id}`} key={`categories-${categoryIndex}`}>
             {(provided) => (
               <div {...provided.droppableProps} ref={provided.innerRef} className="flex-1 max-h-screen mt-9 overflow-auto">
                 <div className="flex flex-col gap-y-3">
@@ -96,7 +97,7 @@ const Home: React.FC = () => {
                   </div>
                   <div className="flex gap-3 flex-col">
                     {category?.data?.map((task: ITaskCard, taskIndex: number) => (
-                      <Draggable draggableId={`task-${task.id}`} key={`task-${task.id}`} index={taskIndex}>
+                      <Draggable draggableId={`task-${task._id}`} key={`task-${task._id}`} index={taskIndex}>
                         {(provided) => (
                           <div
                             {...provided.dragHandleProps}
@@ -104,7 +105,7 @@ const Home: React.FC = () => {
                             ref={provided.innerRef}
 
                           >
-                            <TaskCard isMenu={true} task={task} >
+                            <TaskCard modal={modal} setModal={setModal} isMenu={true} task={task} >
                               <div className={`px-4`}>
                                 <div className={`mt-4`}>
                                   {
@@ -144,7 +145,7 @@ const Home: React.FC = () => {
                   <div>
                     <Button
                       onClick={() => {
-                        formik.setFieldValue('categoryId', category.id)
+                        formik.setFieldValue('categoryId', category._id)
                         setModal(!modal)
                       }}
                       name="Yeni Kart Ekle"
@@ -182,15 +183,35 @@ const Home: React.FC = () => {
             <Input label='Görev Türü' name='state' value={formik.values.state} invalid={(formik.errors.state ? true : false) && formik.touched.state} error={formik.errors.state} onChange={formik.handleChange} />
           </div>
           <div className=''>
-            <Input label='Ek Resim' type="file" name='image' value={formik.values.image} invalid={(formik.errors.image ? true : false) && formik.touched.image} error={formik.errors.image} onChange={(event: ChangeEvent<HTMLInputElement>) => {
-              if (event.target.files && event.target.files.length > 0) {
-                const file = event.target.files[0];
-                formik.setFieldValue("image", file);
-              }
-            }} />
+            <Input label='Görev Türü' name='state' value={formik.values.state} invalid={(formik.errors.state ? true : false) && formik.touched.state} error={formik.errors.state} onChange={formik.handleChange} />
           </div>
-        </div>
-      </Modal>
+          <div className='ml-8 col-span-2 w-80'>
+            {
+              selectedImage ? (
+                <div className="rounded-md gap-1 flex items-center justify-center h-40 w-full">
+                  <div className="bg-no-repeat rounded-md bg-cover bg-center w-full h-full" style={{ backgroundImage: `url(${selectedImage})` }} />
+                </div>
+              ) : (
+                <div onClick={() => imageRef.current?.click()} className="cursor-pointer border-2 border-dashed rounded-md gap-1 flex items-center justify-center h-40">
+                  <span className="cursor-pointer">
+                    Resim Ekle
+                  </span>
+                  <PlusIcon className="h-4 w-4" />
+                </div>
+              )
+            }
+            <div className="hidden">
+              <Input label='Ek Resim' refImage={imageRef} type="file" name='image' value={formik.values.image} invalid={(formik.errors.image ? true : false) && formik.touched.image} error={formik.errors.image} onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                if (event.target.files && event.target.files.length > 0) {
+                  const file = event.target.files[0];
+                  setSelectedImage(URL.createObjectURL(file))
+                  formik.setFieldValue("image", file);
+                }
+              }} />
+            </div>
+          </div>
+        </div >
+      </Modal >
     </div >
   )
 }

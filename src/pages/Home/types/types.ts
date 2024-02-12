@@ -7,7 +7,7 @@ export interface IWorker {
 }
 
 export interface ITaskCard {
-    id?: number,
+    _id?: number,
     categoryId?: number,
     position?: number,
     status?: number[] | [],
@@ -19,7 +19,7 @@ export interface ITaskCard {
     endDate?: Date
 }
 export interface ICategories {
-    id: number,
+    _id: number,
     name: string,
     data?: ITaskCard[] | []
 }
