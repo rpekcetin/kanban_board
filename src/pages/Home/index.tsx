@@ -1,7 +1,7 @@
 import { ICategories, ITaskCard } from "./types/types"
 import TaskCard from '../../components/TaskCard'
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd"
-import { useEffect, useState } from "react"
+import { ChangeEvent, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { HomeTypes } from "./store/types"
 import moment from "moment"
@@ -12,11 +12,12 @@ import Input from '../../components/Input'
 import { useFormik } from "formik"
 import * as Yup from 'yup'
 import { useParams } from "react-router-dom"
+import { DropDown, Item } from "../../components/DropDown"
 const Home: React.FC = () => {
   const dispatch = useDispatch()
   const { id } = useParams()
   const [modal, setModal] = useState<boolean>(false)
-  const [selectedCategory, setSelectedCategory] = useState<number | null>(null)
+  const [show, setShow] = useState<boolean>(false)
   const categories: any = useSelector((state: any) => state?.HomeSlice?.tasksFake)
 
   useEffect(() => {
@@ -30,14 +31,29 @@ const Home: React.FC = () => {
 
 
   const validationSchema = Yup.object({
-    title: Yup.string().required('Lütfen Başlık Giriniz !')
+    title: Yup.string().required('Lütfen Başlık Giriniz !'),
+    mission: Yup.string().required('Lüften Açıklama Giriniz !'),
+    categoryId: Yup.number().required('Lüften Açıklama Giriniz !'),
+    state: Yup.string().required('Lütfen Iş Türü Seçiniz !'),
+    image: Yup.mixed().test(
+      "fileType",
+      "Yanlış dosya türü",
+      (value: any) => !value || (value && ["image/jpeg", "image/png", "image/webp"].includes(value?.type))
+    ),
+    endDate: Yup.date().required('Lütfen Bitiş Tarihi Seçiniz !'),
+    startDate: Yup.date().required('Lütfen Başlangıç Tarihi Seçiniz !')
   })
 
   const formik: any = useFormik({
     initialValues: {
       title: '',
+      panel_id: id,
       mission: '',
       categoryId: '',
+      state: '',
+      image: '',
+      endDate: moment().format('YYYY-MM-DD'),
+      startDate: moment().format('YYYY-MM-DD'),
     },
     validationSchema,
     onSubmit: (values) => {
@@ -65,7 +81,6 @@ const Home: React.FC = () => {
       }
     })
   };
-
   return (
     <div className="flex flex-row gap-4 pr-6 relative py-4 h-full">
       <DragDropContext onDragEnd={(e) => handleDropDrag(e)}>
@@ -129,8 +144,8 @@ const Home: React.FC = () => {
                   <div>
                     <Button
                       onClick={() => {
+                        formik.setFieldValue('categoryId', category.id)
                         setModal(!modal)
-                        setSelectedCategory(category.id)
                       }}
                       name="Yeni Kart Ekle"
                       classes="cursor-pointer w-full py-5 border-dashed border-2 rounded-md border-gray-400 "
@@ -152,22 +167,27 @@ const Home: React.FC = () => {
       >
         <div className="grid grid-cols-2 gap-x-5">
           <div className=''>
-            <Input label='Görev Adı' type="text" name='name' invalid={formik.errors.name ? true : false && formik.touched.name} error={formik.errors.name} onChange={formik.handleChange} />
+            <Input label='Görev Adı' type="text" name='title' value={formik.values.title} invalid={(formik.errors.title ? true : false) && formik.touched.title} error={formik.errors.title} onChange={formik.handleChange} />
           </div>
           <div className=''>
-            <Input label='Açıklama' type="textarea" name='mission' invalid={formik.errors.name ? true : false && formik.touched.name} error={formik.errors.name} onChange={formik.handleChange} />
+            <Input label='Açıklama' type="textarea" name='mission' value={formik.values.mission} invalid={(formik.errors.mission ? true : false) && formik.touched.mission} error={formik.errors.mission} onChange={formik.handleChange} />
           </div>
           <div className=''>
-            <Input label='Görev Başlangıç' type="date" name='startDate' invalid={formik.errors.name ? true : false && formik.touched.name} error={formik.errors.name} onChange={formik.handleChange} />
+            <Input label='Görev Başlangıç' type="date" name='startDate' value={formik.values.startDate} invalid={(formik.errors.startDate ? true : false) && formik.touched.startDate} error={formik.errors.startDate} onChange={formik.handleChange} />
           </div>
           <div className=''>
-            <Input label='Görev Bitiş' type="date" name='endDate' invalid={formik.errors.name ? true : false && formik.touched.name} error={formik.errors.name} onChange={formik.handleChange} />
+            <Input label='Görev Bitiş' type="date" name='endDate' value={formik.values.endDate} invalid={(formik.errors.endDate ? true : false) && formik.touched.endDate} error={formik.errors.endDate} onChange={formik.handleChange} />
           </div>
           <div className=''>
-            <Input label='Görev Türü' name='state' invalid={formik.errors.name ? true : false && formik.touched.name} error={formik.errors.name} onChange={formik.handleChange} />
+            <Input label='Görev Türü' name='state' value={formik.values.state} invalid={(formik.errors.state ? true : false) && formik.touched.state} error={formik.errors.state} onChange={formik.handleChange} />
           </div>
           <div className=''>
-            <Input label='Ek Resim' type="file" name='image' invalid={formik.errors.name ? true : false && formik.touched.name} error={formik.errors.name} onChange={formik.handleChange} />
+            <Input label='Ek Resim' type="file" name='image' value={formik.values.image} invalid={(formik.errors.image ? true : false) && formik.touched.image} error={formik.errors.image} onChange={(event: ChangeEvent<HTMLInputElement>) => {
+              if (event.target.files && event.target.files.length > 0) {
+                const file = event.target.files[0];
+                formik.setFieldValue("image", file);
+              }
+            }} />
           </div>
         </div>
       </Modal>

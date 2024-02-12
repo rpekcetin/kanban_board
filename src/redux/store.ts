@@ -8,7 +8,12 @@ const sagaMiddleware = createSagaMiddleware()
 export const store = configureStore({
   reducer: reducers,
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(sagaMiddleware),
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: ['POST_TASKS'],
+        ignoredPath: ['payload.image']
+      }
+    }).concat(sagaMiddleware),
 });
 sagaMiddleware.run(rootSaga)
 

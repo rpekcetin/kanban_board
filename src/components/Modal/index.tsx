@@ -1,7 +1,11 @@
-import React from "react";
+import React, { useRef } from "react";
 import { IModalProps } from "./types/types";
+import { useOutsideClick } from "../../hooks/useOutsideClick";
 
 const Modal: React.FC<IModalProps> = ({ children, title, modal, setModal, onSubmit, successTitle }) => {
+    const modalRef = useRef<HTMLDivElement>(null);
+    useOutsideClick(modalRef, () => setModal(false));
+
     return (
         <>
             {modal ? (
@@ -9,7 +13,9 @@ const Modal: React.FC<IModalProps> = ({ children, title, modal, setModal, onSubm
                     <div
                         className="min-w-40vh min-h-100 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
                     >
-                        <div className="relative w-auto my-6 mx-auto max-w-3xl">
+                        <div
+                            ref={modalRef}
+                            className="relative w-auto my-6 mx-auto max-w-3xl">
                             {/*content*/}
                             <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
                                 {/*header*/}

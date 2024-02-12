@@ -1,9 +1,16 @@
 import React from 'react'
+import { IOptionsProps, ISelectProps } from './types/types'
 
-const index = () => {
+export const Select: React.FC<ISelectProps> = ({ children }) => {
   return (
-    <div>index</div>
+    <select>
+      {children}
+    </select>
   )
 }
 
-export default index
+export const Options: React.FC<IOptionsProps> = ({ value, children }) => {
+  return (
+    <option value={value}>{children}</option>
+  )
+}

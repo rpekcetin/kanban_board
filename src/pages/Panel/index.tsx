@@ -11,6 +11,8 @@ import { Dispatch } from 'redux'
 import { PanelTypes } from './store/types'
 import { ISelectorType } from '../../types/types'
 import { toast } from 'react-hot-toast'
+import { Options, Select } from '../../components/Select'
+import { DropDown, Item } from '../../components/DropDown'
 
 interface IFormik {
   name: string
@@ -84,6 +86,11 @@ const index = () => {
           </div>
         ))
       }
+      <Select>
+        <Options value={1}>
+          1
+        </Options>
+      </Select>
       <Modal
         title='Yeni Panel Ekle'
         modal={modal}
@@ -92,7 +99,7 @@ const index = () => {
         onSubmit={formik.handleSubmit}
       >
         <div className=' p-6 mx-16'>
-          <Input label='Ad Giriniz' name='name' invalid={formik.errors.name ? true : false && formik.touched.name} error={formik.errors.name} onChange={formik.handleChange} />
+          <Input label='Ad Giriniz' name='name' invalid={(formik.errors.name ? true : false) && formik.touched.name} error={formik.errors.name} onChange={formik.handleChange} />
         </div>
       </Modal>
     </div >

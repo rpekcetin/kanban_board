@@ -4,14 +4,46 @@ import { application } from '../../../redux/store';
 import { HomeActionTypes, HomeTypes } from './types';
 import { toast } from 'react-hot-toast';
 import { getTasks, updateTasksMove } from './slice';
-import { IPostTasks, IUpdateMoveTasks } from '../types/types';
+import { IDeleteTasks, IGetTasks, IPostTasks, IUpdateMoveTasks } from '../types/types';
 
-function* getTasksHandler(action: IPostTasks) {
+function* getTasksHandler(action: IGetTasks) {
     try {
         const response: AxiosResponse<{ data: any[] }> = yield call(() =>
             axios.get(`${application.api}/task/${action?.payload?.id}`)
         );
 
+        yield put(getTasks(response.data.data));
+        toast.success('Görevler Başarıyla Getirildi')
+    } catch (error: any) {
+        if (error.response && error.response.data && error.response.data.message) {
+            toast.error(error.response.data.message);
+        } else {
+            toast.error('Bilinmeyen Bir Hata ile Karşılaşıldı !');
+        }
+    }
+}
+
+function* createTasksHandler(action: IPostTasks) {
+    try {
+        const { title, panel_id, mission, categoryId, state, image, endDate, startDate, }: any = action.payload
+        const form = new FormData()
+        form.append('title', title)
+        form.append('panel_id', panel_id)
+        form.append('mission', mission)
+        form.append('categoryId', categoryId)
+        form.append('endDate', endDate)
+        form.append('state', state)
+        form.append('startDate', startDate)
+        if (image) {
+            form.append('image', image)
+        }
+        console.log(action.payload)
+        console.log(form)
+        const response: AxiosResponse = yield call(axios.post, `${application.api}/task/post`, form, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        })
         yield put(getTasks(response.data.data));
         toast.success('Görevler Başarıyla Getirildi')
     } catch (error: any) {
@@ -52,11 +84,11 @@ function* updateTaskHandler(action: IUpdateMoveTasks) {
     }
 }
 
-function* deleteTasksHandler(action: IPostTasks) {
+function* deleteTasksHandler(action: IDeleteTasks) {
     try {
         const response: AxiosResponse = yield call(axios.delete, `${application.api}/task/${action?.payload?.id}`)
         yield put(getTasks(response.data.data));
-        toast.success('Görevler Başarıyla Getirildi')
+        toast.success('Görev Başarıyla Silindi')
     } catch (error: any) {
         if (error.response && error.response.data && error.response.data.message) {
             toast.error(error.response.data.message);
@@ -69,12 +101,9 @@ function* deleteTasksHandler(action: IPostTasks) {
 
 export function* HomeSagas() {
     yield all([
-        takeEvery(
-            HomeTypes.GET_TASKS as HomeActionTypes, getTasksHandler
-        ),
+        takeEvery(HomeTypes.GET_TASKS as HomeActionTypes, getTasksHandler),
         takeEvery(HomeTypes.DELETE_TASKS as HomeActionTypes, deleteTasksHandler),
-        takeEvery(
-            HomeTypes.UPDATE_TASKS as HomeActionTypes, updateTaskHandler
-        )
+        takeEvery(HomeTypes.UPDATE_TASKS as HomeActionTypes, updateTaskHandler),
+        takeEvery(HomeTypes.POST_TASKS as HomeActionTypes, createTasksHandler)
     ])
 }

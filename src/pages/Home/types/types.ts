@@ -24,7 +24,28 @@ export interface ICategories {
     data?: ITaskCard[] | []
 }
 
+export interface IGetTasks {
+    type: HomeActionTypes,
+    payload: {
+        id?: number
+    }
+}
+
 export interface IPostTasks {
+    type: HomeActionTypes,
+    payload: {
+        title: string,
+        panel_id: number,
+        mission: string,
+        categoryId: number,
+        state: number,
+        image: any,
+        endDate: Date,
+        startDate: Date,
+    }
+}
+
+export interface IDeleteTasks {
     type: HomeActionTypes,
     payload: {
         id?: number
