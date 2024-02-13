@@ -2,9 +2,24 @@ import React, { useState } from 'react'
 import { TaskCardProps } from './types'
 import { ArrowPathIcon, EllipsisHorizontalIcon, TrashIcon } from '@heroicons/react/24/outline'
 import { Action, DropDown, Item } from '../DropDown'
+import { DispatchProp, useDispatch } from 'react-redux'
+import { HomeTypes } from '../../pages/Home/store/types'
 
 const index: React.FC<TaskCardProps> = ({ task, isMenu = false, children, modal, setModal }) => {
     const [show, setShow] = useState<boolean>(false)
+    const dispatch = useDispatch()
+
+    const handleDelete = () => {
+        dispatch({
+            type: HomeTypes.DELETE_TASKS,
+            payload: {
+                _id: task?._id,
+                categoryId: task?.categoryId
+            }
+        })
+        setShow(false)
+    }
+    console.log(task?._id)
     return (
         <div className={`relative shadow-md flex-1 bg-white rounded`}>
             {
@@ -22,15 +37,7 @@ const index: React.FC<TaskCardProps> = ({ task, isMenu = false, children, modal,
                                 </div>
                             </Action>
                             <DropDown show={show} setShow={setShow}>
-                                <Item onClick={() => setShow(false)}>
-                                    <div className='flex justify-start items-center gap-2'>
-                                        <ArrowPathIcon className='w-6 h-6 stroke-green-500' />
-                                        <label className='text-md font-semibold'>
-                                            Güncelle
-                                        </label>
-                                    </div>
-                                </Item>
-                                <Item onClick={() => setShow(false)}>
+                                <Item onClick={handleDelete}>
                                     <div className='flex justify-start items-center gap-2'>
                                         <TrashIcon className='w-6 h-6 stroke-red-500' />
                                         <label className='text-md font-semibold'>

@@ -286,7 +286,10 @@ const HomeSlice = createSlice({
             state.tasks = action.payload
         },
         postTasks: (state: any, action) => {
-            state.tasks = [action.payload, ...state.tasks]
+            const categoryIndex = state.tasks.findIndex((category: any) => category.id === action.payload.categoryId);
+            if (categoryIndex !== -1) {
+                state.tasks[categoryIndex].data.push(action.payload);
+            }
         },
         updateTasks: (state: any, action: any) => {
             const tasksIndex = state.tasks.findIndex(
@@ -296,10 +299,17 @@ const HomeSlice = createSlice({
         },
         updateTasksMove: (state, action: any) => {
             const updatedCategories: any = action.payload;
-            state.tasksFake = updatedCategories;
+            state.tasks = updatedCategories;
         },
-        deleteTasks: (state, action) => {
-            state.tasks = [...state.tasks.filter((el: any) => el.id !== action.payload)]
+        deleteTasks: (state: any, action: any) => {
+            const categoryIndex = state.tasks.findIndex((category: any) => category.id === action.payload.categoryId);
+
+            if (categoryIndex !== -1) {
+                if (state.tasks[categoryIndex] && state.tasks[categoryIndex].data) {
+                    state.tasks[categoryIndex].data = state.tasks[categoryIndex].data.filter((el: any) => el._id !== action.payload._id);
+                }
+
+            }
         }
     },
 })

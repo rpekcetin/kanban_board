@@ -8,5 +8,5 @@ export interface IInputProps {
     name?: string,
     id?: string | undefined
     type?: string
-    refImage?: React.RefObject<HTMLInputElement>
+    refImage?: React.RefObject<HTMLInputElement> | null
 }

@@ -10,9 +10,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Dispatch } from 'redux'
 import { PanelTypes } from './store/types'
 import { ISelectorType } from '../../types/types'
-import { toast } from 'react-hot-toast'
-import { Options, Select } from '../../components/Select'
-import { DropDown, Item } from '../../components/DropDown'
 
 interface IFormik {
   name: string
@@ -22,7 +19,7 @@ const index = () => {
   const [modal, setModal] = useState<boolean>(false)
   const dispatch: Dispatch<any> = useDispatch()
   const navigation: NavigateFunction = useNavigate()
-  const { panels, isLoaded } = useSelector((state: ISelectorType) => state.PanelSlice)
+  const { panels } = useSelector((state: ISelectorType) => state.PanelSlice)
 
   useEffect(() => {
     dispatch({
@@ -86,11 +83,6 @@ const index = () => {
           </div>
         ))
       }
-      <Select>
-        <Options value={1}>
-          1
-        </Options>
-      </Select>
       <Modal
         title='Yeni Panel Ekle'
         modal={modal}

@@ -10,7 +10,7 @@ export interface ITaskCard {
     _id?: number,
     categoryId?: number,
     position?: number,
-    status?: number[] | [],
+    status?: number,
     title?: string,
     mission?: string,
     worker?: IWorker,
@@ -19,7 +19,7 @@ export interface ITaskCard {
     endDate?: Date
 }
 export interface ICategories {
-    _id: number,
+    id: number,
     name: string,
     data?: ITaskCard[] | []
 }
@@ -48,7 +48,8 @@ export interface IPostTasks {
 export interface IDeleteTasks {
     type: HomeActionTypes,
     payload: {
-        id?: number
+        _id: string
+        categoryId: number
     }
 }
 

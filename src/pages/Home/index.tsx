@@ -12,7 +12,8 @@ import Input from '../../components/Input'
 import { useFormik } from "formik"
 import * as Yup from 'yup'
 import { useParams } from "react-router-dom"
-import { DropDown, Item } from "../../components/DropDown"
+import { Options, Select } from "../../components/Select"
+import { application } from "../../redux/store"
 const Home: React.FC = () => {
   const dispatch = useDispatch()
   const { id } = useParams()
@@ -30,12 +31,18 @@ const Home: React.FC = () => {
     })
   }, [id])
 
+  useEffect(() => {
+    if (modal === false) {
+      setSelectedImage(null)
+    }
+  }, [modal])
+
 
   const validationSchema = Yup.object({
     title: Yup.string().required('Lütfen Başlık Giriniz !'),
     mission: Yup.string().required('Lüften Açıklama Giriniz !'),
-    categoryId: Yup.number().required('Lüften Açıklama Giriniz !'),
-    state: Yup.string().required('Lütfen Iş Türü Seçiniz !'),
+    categoryId: Yup.string().required('Lüften Açıklama Giriniz !'),
+    status: Yup.number().required('Lütfen Iş Türü Seçiniz !'),
     image: Yup.mixed().test(
       "fileType",
       "Yanlış dosya türü",
@@ -51,7 +58,7 @@ const Home: React.FC = () => {
       panel_id: id,
       mission: '',
       categoryId: '',
-      state: '',
+      status: 1,
       image: '',
       endDate: moment().format('YYYY-MM-DD'),
       startDate: moment().format('YYYY-MM-DD'),
@@ -62,6 +69,9 @@ const Home: React.FC = () => {
         type: HomeTypes.POST_TASKS,
         payload: values
       })
+      setModal(false)
+      setSelectedImage(null)
+      formik.resetForm()
     }
   })
 
@@ -82,11 +92,12 @@ const Home: React.FC = () => {
       }
     })
   };
+
   return (
     <div className="flex flex-row gap-4 pr-6 relative py-4 h-full">
       <DragDropContext onDragEnd={(e) => handleDropDrag(e)}>
         {categories?.map((category: ICategories, categoryIndex: number) => (
-          <Droppable droppableId={`task-drop-${category._id}`} key={`categories-${categoryIndex}`}>
+          <Droppable droppableId={`task-drop-${category?.id}`} key={`categories-${categoryIndex}`}>
             {(provided) => (
               <div {...provided.droppableProps} ref={provided.innerRef} className="flex-1 max-h-screen mt-9 overflow-auto">
                 <div className="flex flex-col gap-y-3">
@@ -108,21 +119,21 @@ const Home: React.FC = () => {
                             <TaskCard modal={modal} setModal={setModal} isMenu={true} task={task} >
                               <div className={`px-4`}>
                                 <div className={`mt-4`}>
-                                  {
-                                    task?.status?.map((stats: number, index: number) => (
-                                      <div key={`status-button-${index}`}>
-                                        <Button
-                                          stats={stats}
-                                        />
-                                      </div>
-                                    ))
-                                  }
-                                </div>
-                                <div className={`w-full mt-3`}>
-                                  <div className='w-full'>
-                                    <div className="bg-no-repeat rounded-lg bg-cover bg-bottom w-full h-44" style={{ backgroundImage: `url('/image/example-1.webp')` }} />
+                                  <div>
+                                    <Button
+                                      stats={task?.status}
+                                    />
                                   </div>
                                 </div>
+                                {
+                                  task.image ? (
+                                    <div className={`w-full mt-3`}>
+                                      <div className='w-full'>
+                                        <div className="bg-no-repeat rounded-lg bg-cover bg-bottom w-full h-44" style={{ backgroundImage: `url(${application.api}/${task.image})` }} />
+                                      </div>
+                                    </div>
+                                  ) : null
+                                }
                                 <div className='mt-5 pb-4 w-full flex flex-row items-center justify-between'>
                                   <div className=''>
                                     <div className="bg-no-repeat rounded-full bg-cover w-11 h-11" style={{ backgroundImage: `url('/image/profile.jpg')` }} />
@@ -130,7 +141,7 @@ const Home: React.FC = () => {
                                   <div className={`gap-1 flex items-center justify-end`}>
                                     <ClockIcon className='h-6 w-6 stroke-gray-600' />
                                     <p className='text-sm text-gray-600 font-semibold'>
-                                      {`${moment(task.endDate).format('DD')}-${moment(task.startDate).format('DD')} ${moment(task.endDate).format('MMM')}`}
+                                      {`${moment(task.startDate).format('DD')}-${moment(task.endDate).format('DD')} ${moment(task.endDate).format('MMM')}`}
                                     </p>
                                   </div>
                                 </div>
@@ -145,7 +156,7 @@ const Home: React.FC = () => {
                   <div>
                     <Button
                       onClick={() => {
-                        formik.setFieldValue('categoryId', category._id)
+                        formik.setFieldValue('categoryId', category?.id)
                         setModal(!modal)
                       }}
                       name="Yeni Kart Ekle"
@@ -162,6 +173,7 @@ const Home: React.FC = () => {
       <Modal
         title='Yeni Görev Ekle'
         modal={modal}
+        width="w-screen"
         setModal={setModal}
         successTitle='Ekle'
         onSubmit={formik.handleSubmit}
@@ -179,13 +191,20 @@ const Home: React.FC = () => {
           <div className=''>
             <Input label='Görev Bitiş' type="date" name='endDate' value={formik.values.endDate} invalid={(formik.errors.endDate ? true : false) && formik.touched.endDate} error={formik.errors.endDate} onChange={formik.handleChange} />
           </div>
-          <div className=''>
-            <Input label='Görev Türü' name='state' value={formik.values.state} invalid={(formik.errors.state ? true : false) && formik.touched.state} error={formik.errors.state} onChange={formik.handleChange} />
+          <div className='mx-44 col-span-2 w-98'>
+            <Select label="Görev Türü" value={formik.values.status} invalid={(formik.errors.status ? true : false) && formik.touched.status} error={formik.errors.status} onChange={(e) => formik.setFieldValue('status', parseInt(e.target.value))} >
+              <Options value={1}>
+                UX Design
+              </Options>
+              <Options value={2}>
+                Developer
+              </Options>
+              <Options value={3}>
+                CopyWriting
+              </Options>
+            </Select>
           </div>
-          <div className=''>
-            <Input label='Görev Türü' name='state' value={formik.values.state} invalid={(formik.errors.state ? true : false) && formik.touched.state} error={formik.errors.state} onChange={formik.handleChange} />
-          </div>
-          <div className='ml-8 col-span-2 w-80'>
+          <div className='mx-44 mt-8 col-span-2 w-98'>
             {
               selectedImage ? (
                 <div className="rounded-md gap-1 flex items-center justify-center h-40 w-full">
@@ -201,7 +220,7 @@ const Home: React.FC = () => {
               )
             }
             <div className="hidden">
-              <Input label='Ek Resim' refImage={imageRef} type="file" name='image' value={formik.values.image} invalid={(formik.errors.image ? true : false) && formik.touched.image} error={formik.errors.image} onChange={(event: ChangeEvent<HTMLInputElement>) => {
+              <Input label='Ek Resim' refImage={imageRef} type="file" name='image' invalid={(formik.errors.image ? true : false) && formik.touched.image} error={formik.errors.image} onChange={(event: ChangeEvent<HTMLInputElement>) => {
                 if (event.target.files && event.target.files.length > 0) {
                   const file = event.target.files[0];
                   setSelectedImage(URL.createObjectURL(file))

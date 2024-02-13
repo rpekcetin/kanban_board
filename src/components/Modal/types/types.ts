@@ -4,5 +4,6 @@ export interface IModalProps {
     setModal: React.Dispatch<React.SetStateAction<boolean>>
     title?: string
     onSubmit?: any
-    successTitle?:any
+    successTitle?: any
+    width?: 'w-screen' | 'w-full' | 'w-auto'
 }
