@@ -4,12 +4,12 @@ import { application } from '../../../redux/store';
 import { PanelActionTypes, PanelTypes } from './types';
 import { toast } from 'react-hot-toast';
 import { deletePanels, getPanels, postPanels, updateLoaded } from './slice';
-import { INewPanelPayload } from '../types/types';
+import { IDeletePanelPayload, INewPanelPayload, IPanel } from '../types/types';
 
-function* getPanelsHandler({ payload }: any) {
+function* getPanelsHandler() {
     try {
         yield put(updateLoaded(false))
-        const response: AxiosResponse<{ data: any[] }> = yield call(() =>
+        const response: AxiosResponse<IPanel[]> = yield call(() =>
             axios.get(`${application.api}/panel`)
         );
         yield put(getPanels(response.data));
@@ -38,10 +38,10 @@ function* createPanelsHandler(action: INewPanelPayload) {
 }
 
 
-function* deletePanelsHandler(action: any) {
+function* deletePanelsHandler(action: IDeletePanelPayload) {
     try {
-        const response: AxiosResponse = yield call(axios.delete, `${application.api}/panel/delete/${action?.payload?._id}`);
-        yield put(deletePanels(action.payload._id));
+        yield call(axios.delete, `${application.api}/panel/delete/${action?.payload?._id}`);
+        yield put(deletePanels({ _id: action.payload._id }))
         toast.success('Panel Başarılı Bir Şekilde Silindi')
     } catch (error: any) {
         if (error.response && error.response.data && error.response.data.message) {

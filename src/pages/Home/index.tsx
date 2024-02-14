@@ -1,6 +1,6 @@
-import { ICategories, ITaskCard } from "./types/types"
+import { ICategories, IPostTasksPayload, ITaskCard } from "./types/types"
 import TaskCard from '../../components/TaskCard'
-import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd"
+import { DragDropContext, Draggable, DropResult, Droppable } from "react-beautiful-dnd"
 import { ChangeEvent, useEffect, useRef, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { HomeTypes } from "./store/types"
@@ -11,16 +11,19 @@ import Modal from "../../components/Modal"
 import Input from '../../components/Input'
 import { useFormik } from "formik"
 import * as Yup from 'yup'
-import { useParams } from "react-router-dom"
+import { Params, useParams } from "react-router-dom"
 import { Options, Select } from "../../components/Select"
 import { application } from "../../redux/store"
+import { ISelectorType } from "../../types/types"
+import { Dispatch } from "redux"
+
 const Home: React.FC = () => {
-  const dispatch = useDispatch()
-  const { id } = useParams()
+  const dispatch: Dispatch<any> = useDispatch()
+  const { id }: Params<string> = useParams()
   const imageRef = useRef<HTMLInputElement>(null)
   const [modal, setModal] = useState<boolean>(false)
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
-  const categories: any = useSelector((state: any) => state?.HomeSlice?.tasks)
+  const categories: ICategories[] = useSelector((state: ISelectorType) => state?.HomeSlice?.tasks)
 
   useEffect(() => {
     dispatch({
@@ -41,30 +44,30 @@ const Home: React.FC = () => {
   const validationSchema = Yup.object({
     title: Yup.string().required('Lütfen Başlık Giriniz !'),
     mission: Yup.string().required('Lüften Açıklama Giriniz !'),
-    categoryId: Yup.string().required('Lüften Açıklama Giriniz !'),
+    categoryId: Yup.number().required('Lüften Kategori Giriniz !'),
     status: Yup.number().required('Lütfen Iş Türü Seçiniz !'),
     image: Yup.mixed().test(
       "fileType",
       "Yanlış dosya türü",
       (value: any) => !value || (value && ["image/jpeg", "image/png", "image/webp"].includes(value?.type))
-    ),
+    ).nullable(),
     endDate: Yup.date().required('Lütfen Bitiş Tarihi Seçiniz !'),
     startDate: Yup.date().required('Lütfen Başlangıç Tarihi Seçiniz !')
   })
 
-  const formik: any = useFormik({
+  const formik = useFormik<IPostTasksPayload>({
     initialValues: {
       title: '',
       panel_id: id,
       mission: '',
-      categoryId: '',
+      categoryId: 0,
       status: 1,
-      image: '',
+      image: null,
       endDate: moment().format('YYYY-MM-DD'),
       startDate: moment().format('YYYY-MM-DD'),
     },
     validationSchema,
-    onSubmit: (values) => {
+    onSubmit: (values: IPostTasksPayload) => {
       dispatch({
         type: HomeTypes.POST_TASKS,
         payload: values
@@ -75,7 +78,7 @@ const Home: React.FC = () => {
     }
   })
 
-  const handleDropDrag = (event: any) => {
+  const handleDropDrag = (event: DropResult) => {
     const fromCategoryId: number | undefined = Number(event.source.droppableId.replace('task-drop-', ''));
     const toCategoryId: number | undefined = Number(event.destination?.droppableId.replace('task-drop-', ''));
     const fromIndex: number | undefined = event.source.index;
@@ -186,10 +189,10 @@ const Home: React.FC = () => {
             <Input label='Açıklama' type="textarea" name='mission' value={formik.values.mission} invalid={(formik.errors.mission ? true : false) && formik.touched.mission} error={formik.errors.mission} onChange={formik.handleChange} />
           </div>
           <div className=''>
-            <Input label='Görev Başlangıç' type="date" name='startDate' value={formik.values.startDate} invalid={(formik.errors.startDate ? true : false) && formik.touched.startDate} error={formik.errors.startDate} onChange={formik.handleChange} />
+            <Input label='Görev Başlangıç' type="date" name='startDate' value={formik.values.startDate} invalid={(formik.errors.startDate ? true : false) && formik.touched.startDate} error={formik.errors.startDate} onChange={(e) => formik.setFieldValue('startDate', moment(e.target.value).format('YYYY-MM-DD'))} />
           </div>
           <div className=''>
-            <Input label='Görev Bitiş' type="date" name='endDate' value={formik.values.endDate} invalid={(formik.errors.endDate ? true : false) && formik.touched.endDate} error={formik.errors.endDate} onChange={formik.handleChange} />
+            <Input label='Görev Bitiş' type="date" name='endDate' value={formik.values.endDate} invalid={(formik.errors.endDate ? true : false) && formik.touched.endDate} error={formik.errors.endDate} onChange={(e) => formik.setFieldValue('startDate', moment(e.target.value).format('YYYY-MM-DD'))} />
           </div>
           <div className='mx-44 col-span-2 w-98'>
             <Select label="Görev Türü" value={formik.values.status} invalid={(formik.errors.status ? true : false) && formik.touched.status} error={formik.errors.status} onChange={(e) => formik.setFieldValue('status', parseInt(e.target.value))} >

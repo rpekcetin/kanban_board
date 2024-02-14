@@ -10,3 +10,9 @@ export interface IThemeTypes {
     id: number,
     class: string
 }
+
+export interface IStatus {
+    id: number,
+    name: string
+    color: string
+}

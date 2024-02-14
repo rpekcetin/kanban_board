@@ -10,10 +10,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Dispatch } from 'redux'
 import { PanelTypes } from './store/types'
 import { ISelectorType } from '../../types/types'
-
-interface IFormik {
-  name: string
-}
+import { IPanel, IPanelValidation } from './types/types'
 
 const index = () => {
   const [modal, setModal] = useState<boolean>(false)
@@ -27,11 +24,11 @@ const index = () => {
     })
   }, [0])
 
-  const validationSchema: any = Yup.object({
+  const validationSchema = Yup.object({
     name: Yup.string().required('Lütfen ad giriniz!')
   })
 
-  const formik = useFormik<IFormik>({
+  const formik = useFormik<IPanelValidation>({
     initialValues: {
       name: ''
     },
@@ -48,7 +45,7 @@ const index = () => {
     }
   })
 
-  const handleDelete = (_id: number) => {
+  const handleDelete = (_id: string) => {
     dispatch({
       type: PanelTypes.DELETE_PANELS,
       payload: {
@@ -70,7 +67,7 @@ const index = () => {
         </TaskCard>
       </div>
       {
-        panels?.map((data: any, index: number) => (
+        panels?.map((data: IPanel, index: number) => (
           <div className='cursor-pointer' key={`panel-card-${index}`}>
             <TaskCard>
               <TrashIcon onClick={() => handleDelete(data._id)} className='h-5 w-5 absolute stroke-red-500 top-3 right-3 cursor-pointer z-2' />

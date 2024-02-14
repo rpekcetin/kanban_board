@@ -1,9 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { IDropDownProps } from './types/types'
+import React, { useRef } from 'react'
+import { IActionTypes, IDropDownProps, IItemTypes } from './types/types'
 import { useOutsideClick } from '../../hooks/useOutsideClick';
 
 export const DropDown: React.FC<IDropDownProps> = ({ children, show, setShow }) => {
-    const dropdownRef = useRef<HTMLDivElement>(null);
+    const dropdownRef: React.RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
     useOutsideClick(dropdownRef, () => setShow(false));
 
     return (
@@ -17,7 +17,7 @@ export const DropDown: React.FC<IDropDownProps> = ({ children, show, setShow }) 
     )
 }
 
-export const Action = ({ children }: any) => {
+export const Action: React.FC<IActionTypes> = ({ children }) => {
     return (
         <>
             {children}
@@ -25,7 +25,7 @@ export const Action = ({ children }: any) => {
     )
 }
 
-export const Item = ({ children, onClick }: any) => {
+export const Item: React.FC<IItemTypes> = ({ children, onClick }) => {
     return (
         <li className='cursor-pointer' onClick={onClick}>
             <span className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">

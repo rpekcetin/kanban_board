@@ -1,15 +1,16 @@
 import React, { useState } from 'react'
 import { TaskCardProps } from './types'
-import { ArrowPathIcon, EllipsisHorizontalIcon, TrashIcon } from '@heroicons/react/24/outline'
+import { EllipsisHorizontalIcon, TrashIcon } from '@heroicons/react/24/outline'
 import { Action, DropDown, Item } from '../DropDown'
-import { DispatchProp, useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { HomeTypes } from '../../pages/Home/store/types'
+import { Dispatch } from 'redux'
 
-const index: React.FC<TaskCardProps> = ({ task, isMenu = false, children, modal, setModal }) => {
+const index: React.FC<TaskCardProps> = ({ task, isMenu = false, children }) => {
     const [show, setShow] = useState<boolean>(false)
-    const dispatch = useDispatch()
+    const dispatch: Dispatch<any> = useDispatch()
 
-    const handleDelete = () => {
+    const handleDelete: () => void = () => {
         dispatch({
             type: HomeTypes.DELETE_TASKS,
             payload: {
@@ -19,7 +20,7 @@ const index: React.FC<TaskCardProps> = ({ task, isMenu = false, children, modal,
         })
         setShow(false)
     }
-    console.log(task?._id)
+
     return (
         <div className={`relative shadow-md flex-1 bg-white rounded`}>
             {

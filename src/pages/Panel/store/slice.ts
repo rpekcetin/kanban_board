@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { IDeletePanelPayload, IPanelGet, IPanelInitialState, IPanelNew, IPanelUpdateLoaded } from '../types/types'
 
-const initialState = {
+const initialState: IPanelInitialState = {
     panels: [],
     isLoaded: false
 }
@@ -8,19 +9,16 @@ const PanelSlice = createSlice({
     name: 'tasks',
     initialState: initialState,
     reducers: {
-        getPanels: (state, action) => {
+        getPanels: (state: IPanelInitialState, action: IPanelGet) => {
             state.panels = action.payload
         },
-        postPanels: (state: any, action: any) => {
+        postPanels: (state: IPanelInitialState, action: IPanelNew) => {
             state.panels = [action.payload, ...state.panels]
         },
-        deletePanels: (state, action) => {
-            state.panels = [...state.panels.filter((el: any) => el._id !== action.payload)]
+        deletePanels: (state: IPanelInitialState, action: IDeletePanelPayload) => {
+            state.panels = [...state.panels.filter((el: any) => el._id !== action.payload._id)]
         },
-        updateLoaded: (state: any, action: {
-            payload: boolean;
-            type: string;
-        }) => {
+        updateLoaded: (state: IPanelInitialState, action: IPanelUpdateLoaded) => {
             state.isLoaded = action.payload
         },
     },

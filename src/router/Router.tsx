@@ -5,7 +5,7 @@ const Home = lazy(() => import('../pages/Home'))
 const Panel = lazy(() => import('../pages/Panel'))
 import Layout from '../layout/Layout'
 
-function Router() {
+const Router: React.FC = () => {
   const element = useRoutes([
     {
       element: <Layout />,

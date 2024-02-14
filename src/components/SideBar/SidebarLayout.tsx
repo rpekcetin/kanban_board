@@ -1,12 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { FireIcon } from '@heroicons/react/24/solid'
-import { HomeIcon, UserIcon } from '@heroicons/react/24/outline'
+import { HomeIcon } from '@heroicons/react/24/outline'
 import { NavigateFunction, useNavigate } from 'react-router-dom';
-interface MenuItems {
-  name: string
-  route: string
-  icons: React.ReactNode
-}
+import { MenuItems } from './types/types';
+
 
 const SidebarLayout: React.FC = () => {
   const navigate: NavigateFunction = useNavigate()
@@ -25,7 +22,7 @@ const SidebarLayout: React.FC = () => {
             <FireIcon className='h-12 w-12 fill-emerald-500' />
           </label>
         </div>
-        {menuItems.map((data, index) => (
+        {menuItems.map((data: MenuItems, index: number) => (
           <div onClick={() => navigate(data.route)} className='group px-3 py-5 cursor-pointer hover:bg-emerald-50' key={`menu-items-${index}`}>
             <div className='flex flex-row items-center justify-center text-center'>
               <div className='cursor-pointer'>

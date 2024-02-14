@@ -21,7 +21,7 @@ export interface ITaskCard {
 export interface ICategories {
     id: number,
     name: string,
-    data?: ITaskCard[] | []
+    data: ITaskCard[]
 }
 
 export interface IGetTasks {
@@ -31,18 +31,20 @@ export interface IGetTasks {
     }
 }
 
+export interface IPostTasksPayload {
+    title: string
+    panel_id: string | undefined
+    mission: string
+    categoryId: number
+    image: File | null
+    endDate: string
+    startDate: string
+    status: number
+}
+
 export interface IPostTasks {
     type: HomeActionTypes,
-    payload: {
-        title: string,
-        panel_id: number,
-        mission: string,
-        categoryId: number,
-        state: number,
-        image: any,
-        endDate: Date,
-        startDate: Date,
-    }
+    payload: IPostTasksPayload
 }
 
 export interface IDeleteTasks {
@@ -61,4 +63,23 @@ export interface IUpdateMoveTasks {
         fromIndex: number,
         toIndex: number
     }
+}
+
+export interface IUpdateMoveTaskSlice {
+    type: HomeActionTypes,
+    payload: ICategories[]
+}
+
+export interface ITaskInitialValues {
+    tasks: ICategories[]
+}
+
+export interface ITasksPostSlice {
+    type: HomeActionTypes
+    payload: ITaskCard
+}
+
+export interface ITaskDeleteSlice {
+    type: HomeActionTypes
+    payload: ITaskCard
 }
