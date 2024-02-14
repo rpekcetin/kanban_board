@@ -3,7 +3,7 @@ export interface IModalProps {
     modal: boolean
     setModal: React.Dispatch<React.SetStateAction<boolean>>
     title?: string
-    onSubmit?: any
-    successTitle?: any
+    onSubmit: () => void
+    successTitle?: string
     width?: 'w-screen' | 'w-full' | 'w-auto'
 }

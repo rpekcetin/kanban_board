@@ -7,14 +7,13 @@ import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { NavigateFunction, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { Dispatch } from 'redux'
 import { PanelTypes } from './store/types'
 import { ISelectorType } from '../../types/types'
 import { IPanel, IPanelValidation } from './types/types'
 
 const index = () => {
   const [modal, setModal] = useState<boolean>(false)
-  const dispatch: Dispatch<any> = useDispatch()
+  const dispatch = useDispatch()
   const navigation: NavigateFunction = useNavigate()
   const { panels } = useSelector((state: ISelectorType) => state.PanelSlice)
 

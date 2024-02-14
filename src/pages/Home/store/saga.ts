@@ -1,5 +1,5 @@
 import { call, put, takeEvery, all, select } from 'redux-saga/effects';
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import { application } from '../../../redux/store';
 import { HomeActionTypes, HomeTypes } from './types';
 import { toast } from 'react-hot-toast';
@@ -13,12 +13,14 @@ function* getTasksHandler(action: IGetTasks) {
         );
         yield put(getTasks(response.data));
         toast.success('Görevler Başarıyla Getirildi')
-    } catch (error: any) {
-        if (error.response && error.response.data && error.response.data.message) {
-            window.location.href = '/'
-            toast.error(error.response.data.message);
-        } else {
-            toast.error('Bilinmeyen Bir Hata ile Karşılaşıldı !');
+    } catch (error: unknown) {
+        if (error instanceof AxiosError) {
+            if (error.response && error.response.data && error.response.data.message) {
+                window.location.href = '/'
+                toast.error(error.response.data.message);
+            } else {
+                toast.error('Bilinmeyen Bir Hata ile Karşılaşıldı !');
+            }
         }
     }
 }
@@ -46,9 +48,10 @@ function* createTasksHandler(action: IPostTasks) {
         })
         yield put(postTasks(response.data));
         toast.success('Görevler Başarıyla Getirildi')
-    } catch (error: any) {
-        if (error.response && error.response.data && error.response.data.message) {
-            toast.error(error.response.data.message);
+    } catch (error: unknown) {
+        if (error instanceof AxiosError) {
+            const message = error.response?.data.message || 'Bilinmeyen Bir Hata ile Karşılaşıldı !';
+            toast.error(message);
         } else {
             toast.error('Bilinmeyen Bir Hata ile Karşılaşıldı !');
         }
@@ -59,8 +62,8 @@ function* updateTaskHandler(action: IUpdateMoveTasks) {
     try {
         const categories: ICategories[] = yield select(state => state.HomeSlice.tasks);
         const newCategories: ICategories[] = JSON.parse(JSON.stringify(categories)) as ICategories[];
-        const fromCategoryIndex: number = newCategories.findIndex((category: any) => category.id === action.payload.fromCategoryId);
-        const toCategoryIndex: number = newCategories.findIndex((category: any) => category.id === action.payload.toCategoryId);
+        const fromCategoryIndex: number = newCategories.findIndex((category: ICategories) => category.id === action.payload.fromCategoryId);
+        const toCategoryIndex: number = newCategories.findIndex((category: ICategories) => category.id === action.payload.toCategoryId);
         const fromCategory: ICategories = newCategories[fromCategoryIndex];
         const toCategory: ICategories = newCategories[toCategoryIndex];
 
@@ -76,9 +79,10 @@ function* updateTaskHandler(action: IUpdateMoveTasks) {
         }
         yield put(updateTasksMove(newCategories));
         yield call(axios.put, `${application.api}/task/update`, { data: [...toCategory?.data ?? null, ...fromCategory?.data ?? null] })
-    } catch (error: any) {
-        if (error.response && error.response.data && error.response.data.message) {
-            toast.error(error.response.data.message);
+    } catch (error: unknown) {
+        if (error instanceof AxiosError) {
+            const message = error.response?.data.message || 'Bilinmeyen Bir Hata ile Karşılaşıldı !';
+            toast.error(message);
         } else {
             toast.error('Bilinmeyen Bir Hata ile Karşılaşıldı !');
         }
@@ -90,9 +94,10 @@ function* deleteTasksHandler(action: IDeleteTasks) {
         const response: AxiosResponse = yield call(axios.delete, `${application.api}/task/delete/${action?.payload?._id}`)
         yield put(deleteTasks(response.data));
         toast.success('Görev Başarıyla Silindi')
-    } catch (error: any) {
-        if (error.response && error.response.data && error.response.data.message) {
-            toast.error(error.response.data.message);
+    } catch (error: unknown) {
+        if (error instanceof AxiosError) {
+            const message = error.response?.data.message || 'Bilinmeyen Bir Hata ile Karşılaşıldı !';
+            toast.error(message);
         } else {
             toast.error('Bilinmeyen Bir Hata ile Karşılaşıldı !');
         }

@@ -15,10 +15,9 @@ import { Params, useParams } from "react-router-dom"
 import { Options, Select } from "../../components/Select"
 import { application } from "../../redux/store"
 import { ISelectorType } from "../../types/types"
-import { Dispatch } from "redux"
 
 const Home: React.FC = () => {
-  const dispatch: Dispatch<any> = useDispatch()
+  const dispatch = useDispatch()
   const { id }: Params<string> = useParams()
   const imageRef = useRef<HTMLInputElement>(null)
   const [modal, setModal] = useState<boolean>(false)
@@ -46,11 +45,16 @@ const Home: React.FC = () => {
     mission: Yup.string().required('Lüften Açıklama Giriniz !'),
     categoryId: Yup.number().required('Lüften Kategori Giriniz !'),
     status: Yup.number().required('Lütfen Iş Türü Seçiniz !'),
-    image: Yup.mixed().test(
-      "fileType",
-      "Yanlış dosya türü",
-      (value: any) => !value || (value && ["image/jpeg", "image/png", "image/webp"].includes(value?.type))
-    ).nullable(),
+    image: Yup.mixed().test("fileType", "Yanlış dosya türü", (value) => {
+      if (!value) {
+        return true;
+      }
+      if (value instanceof File) {
+        return ["image/jpeg", "image/png", "image/webp"].includes(value.type);
+      }
+      return true;
+    })
+      .nullable(),
     endDate: Yup.date().required('Lütfen Bitiş Tarihi Seçiniz !'),
     startDate: Yup.date().required('Lütfen Başlangıç Tarihi Seçiniz !')
   })

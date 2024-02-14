@@ -8,5 +8,5 @@ export interface ISelectProps {
 }
 export interface IOptionsProps {
     children: React.ReactNode,
-    value: any
+    value: number
 }

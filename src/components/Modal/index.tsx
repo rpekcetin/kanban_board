@@ -2,7 +2,7 @@ import React, { useRef } from "react";
 import { IModalProps } from "./types/types";
 import { useOutsideClick } from "../../hooks/useOutsideClick";
 
-const Modal: React.FC<IModalProps> = ({ children, width, title, modal, setModal, onSubmit, successTitle }) => {
+const Modal: React.FC<IModalProps> = ({ children, width, title, modal, setModal, onSubmit, successTitle = 'Kaydet' }) => {
     const modalRef = useRef<HTMLDivElement>(null);
     useOutsideClick(modalRef, () => setModal(false));
 
@@ -43,7 +43,7 @@ const Modal: React.FC<IModalProps> = ({ children, width, title, modal, setModal,
                                         type="button"
                                         onClick={() => onSubmit()}
                                     >
-                                        {successTitle ?? 'Kaydet'}
+                                        {successTitle}
                                     </button>
                                     <button
                                         className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"

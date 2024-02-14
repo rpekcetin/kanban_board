@@ -4,11 +4,10 @@ import { EllipsisHorizontalIcon, TrashIcon } from '@heroicons/react/24/outline'
 import { Action, DropDown, Item } from '../DropDown'
 import { useDispatch } from 'react-redux'
 import { HomeTypes } from '../../pages/Home/store/types'
-import { Dispatch } from 'redux'
 
 const index: React.FC<TaskCardProps> = ({ task, isMenu = false, children }) => {
     const [show, setShow] = useState<boolean>(false)
-    const dispatch: Dispatch<any> = useDispatch()
+    const dispatch = useDispatch()
 
     const handleDelete: () => void = () => {
         dispatch({

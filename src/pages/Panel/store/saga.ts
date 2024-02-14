@@ -1,5 +1,5 @@
-import { call, put, takeEvery, all, select } from 'redux-saga/effects';
-import axios, { AxiosResponse } from 'axios';
+import { call, put, takeEvery, all } from 'redux-saga/effects';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import { application } from '../../../redux/store';
 import { PanelActionTypes, PanelTypes } from './types';
 import { toast } from 'react-hot-toast';
@@ -14,9 +14,10 @@ function* getPanelsHandler() {
         );
         yield put(getPanels(response.data));
         yield put(updateLoaded(true))
-    } catch (error: any) {
-        if (error.response && error.response.data && error.response.data.message) {
-            toast.error(error.response.data.message);
+    } catch (error: unknown) {
+        if (error instanceof AxiosError) {
+            const message = error.response?.data.message || 'Bilinmeyen Bir Hata ile Karşılaşıldı !';
+            toast.error(message);
         } else {
             toast.error('Bilinmeyen Bir Hata ile Karşılaşıldı !');
         }
@@ -28,9 +29,10 @@ function* createPanelsHandler(action: INewPanelPayload) {
         const response: AxiosResponse = yield call(axios.post, `${application.api}/panel/post`, { name: action.payload.name });
         toast.success('Yeni Panel Başarı ile Eklendi')
         yield put(postPanels(response.data));
-    } catch (error: any) {
-        if (error.response && error.response.data && error.response.data.message) {
-            toast.error(error.response.data.message);
+    } catch (error: unknown) {
+        if (error instanceof AxiosError) {
+            const message = error.response?.data.message || 'Bilinmeyen Bir Hata ile Karşılaşıldı !';
+            toast.error(message);
         } else {
             toast.error('Bilinmeyen Bir Hata ile Karşılaşıldı !');
         }
@@ -43,9 +45,10 @@ function* deletePanelsHandler(action: IDeletePanelPayload) {
         yield call(axios.delete, `${application.api}/panel/delete/${action?.payload?._id}`);
         yield put(deletePanels({ _id: action.payload._id }))
         toast.success('Panel Başarılı Bir Şekilde Silindi')
-    } catch (error: any) {
-        if (error.response && error.response.data && error.response.data.message) {
-            toast.error(error.response.data.message);
+    } catch (error: unknown) {
+        if (error instanceof AxiosError) {
+            const message = error.response?.data.message || 'Bilinmeyen Bir Hata ile Karşılaşıldı !';
+            toast.error(message);
         } else {
             toast.error('Bilinmeyen Bir Hata ile Karşılaşıldı !');
         }
