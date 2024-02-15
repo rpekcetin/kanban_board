@@ -18,5 +18,5 @@ export const store = configureStore({
 sagaMiddleware.run(rootSaga)
 
 export const application = {
-  api: "http://localhost:3005",
+  api: "https://kanban-board-express.onrender.com",
 };

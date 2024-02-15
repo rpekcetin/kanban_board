@@ -1,7 +1,7 @@
 import React from 'react'
 import { IButtonProps, IStatus, IThemeTypes } from './types'
-import { colorThemes } from '../../fakeData/colorThemes'
-import { Status } from '../../fakeData/status'
+import { colorThemes } from '../../data/colorThemes'
+import { Status } from '../../data/status'
 
 
 const index: React.FC<IButtonProps> = (props) => {
