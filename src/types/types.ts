@@ -1,10 +1,13 @@
+import { ICategories } from "../pages/Home/types/types"
+import { IPanel } from "../pages/Panel/types/types"
+
 export interface ISelectorType {
     HomeSlice: {
-        tasks: any,
+        tasks: ICategories[],
         isLoaded: boolean
     }
     PanelSlice: {
-        panels: any,
+        panels: IPanel[],
         isLoaded: boolean
     }
 }
