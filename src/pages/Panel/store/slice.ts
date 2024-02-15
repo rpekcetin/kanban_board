@@ -10,16 +10,16 @@ const PanelSlice = createSlice({
     initialState: initialState,
     reducers: {
         getPanels: (state: IPanelInitialState, action: IPanelGet) => {
-            state.panels = action.payload
+            state.panels = action?.payload
         },
         postPanels: (state: IPanelInitialState, action: IPanelNew) => {
-            state.panels = [action.payload, ...state.panels]
+            state.panels = [action?.payload, ...state.panels]
         },
         deletePanels: (state: IPanelInitialState, action: IDeletePanelPayload) => {
-            state.panels = [...state.panels.filter((el: IPanel) => el._id !== action.payload._id)]
+            state.panels = [...state.panels.filter((el: IPanel) => el._id !== action?.payload?._id)]
         },
         updateLoaded: (state: IPanelInitialState, action: IPanelUpdateLoaded) => {
-            state.isLoaded = action.payload
+            state.isLoaded = action?.payload
         },
     },
 })

@@ -10,13 +10,13 @@ function* getPanelsHandler() {
     try {
         yield put(updateLoaded(false))
         const response: AxiosResponse<IPanel[]> = yield call(() =>
-            axios.get(`${application.api}/panel`)
+            axios.get(`${application?.api}/panel`)
         );
-        yield put(getPanels(response.data));
+        yield put(getPanels(response?.data));
         yield put(updateLoaded(true))
     } catch (error: unknown) {
         if (error instanceof AxiosError) {
-            const message = error.response?.data.message || 'Bilinmeyen Bir Hata ile Karşılaşıldı !';
+            const message = error?.response?.data?.message || 'Bilinmeyen Bir Hata ile Karşılaşıldı !';
             toast.error(message);
         } else {
             toast.error('Bilinmeyen Bir Hata ile Karşılaşıldı !');
@@ -26,12 +26,12 @@ function* getPanelsHandler() {
 
 function* createPanelsHandler(action: INewPanelPayload) {
     try {
-        const response: AxiosResponse = yield call(axios.post, `${application.api}/panel/post`, { name: action.payload.name });
+        const response: AxiosResponse = yield call(axios.post, `${application?.api}/panel/post`, { name: action?.payload?.name });
         toast.success('Yeni Panel Başarı ile Eklendi')
         yield put(postPanels(response.data));
     } catch (error: unknown) {
         if (error instanceof AxiosError) {
-            const message = error.response?.data.message || 'Bilinmeyen Bir Hata ile Karşılaşıldı !';
+            const message = error?.response?.data?.message || 'Bilinmeyen Bir Hata ile Karşılaşıldı !';
             toast.error(message);
         } else {
             toast.error('Bilinmeyen Bir Hata ile Karşılaşıldı !');

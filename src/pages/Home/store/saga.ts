@@ -15,9 +15,9 @@ function* getTasksHandler(action: IGetTasks) {
         toast.success('Görevler Başarıyla Getirildi')
     } catch (error: unknown) {
         if (error instanceof AxiosError) {
-            if (error.response && error.response.data && error.response.data.message) {
+            if (error?.response && error?.response?.data && error?.response?.data?.message) {
                 window.location.href = '/'
-                toast.error(error.response.data.message);
+                toast.error(error?.response?.data?.message);
             } else {
                 toast.error('Bilinmeyen Bir Hata ile Karşılaşıldı !');
             }
@@ -60,19 +60,19 @@ function* createTasksHandler(action: IPostTasks) {
 
 function* updateTaskHandler(action: IUpdateMoveTasks) {
     try {
-        const categories: ICategories[] = yield select(state => state.HomeSlice.tasks);
+        const categories: ICategories[] = yield select(state => state?.HomeSlice?.tasks);
         const newCategories: ICategories[] = JSON.parse(JSON.stringify(categories)) as ICategories[];
-        const fromCategoryIndex: number = newCategories.findIndex((category: ICategories) => category.id === action.payload.fromCategoryId);
-        const toCategoryIndex: number = newCategories.findIndex((category: ICategories) => category.id === action.payload.toCategoryId);
+        const fromCategoryIndex: number = newCategories?.findIndex((category: ICategories) => category.id === action?.payload?.fromCategoryId);
+        const toCategoryIndex: number = newCategories?.findIndex((category: ICategories) => category.id === action?.payload?.toCategoryId);
         const fromCategory: ICategories = newCategories[fromCategoryIndex];
         const toCategory: ICategories = newCategories[toCategoryIndex];
 
         if (fromCategory && toCategory) {
-            const taskMoving = fromCategory?.data?.splice(action.payload.fromIndex, 1)[0];
-            taskMoving.categoryId = toCategory.id;
-            toCategory.data.splice(action.payload.toIndex, 0, taskMoving);
-            [fromCategory, toCategory].forEach(category => {
-                category.data.forEach((task: ITaskCard, index: number) => {
+            const taskMoving = fromCategory?.data?.splice(action?.payload?.fromIndex, 1)[0];
+            taskMoving.categoryId = toCategory?.id;
+            toCategory?.data?.splice(action?.payload?.toIndex, 0, taskMoving);
+            [fromCategory, toCategory]?.forEach(category => {
+                category?.data?.forEach((task: ITaskCard, index: number) => {
                     task.position = index + 1;
                 });
             });
@@ -96,7 +96,7 @@ function* deleteTasksHandler(action: IDeleteTasks) {
         toast.success('Görev Başarıyla Silindi')
     } catch (error: unknown) {
         if (error instanceof AxiosError) {
-            const message = error.response?.data.message || 'Bilinmeyen Bir Hata ile Karşılaşıldı !';
+            const message = error?.response?.data?.message || 'Bilinmeyen Bir Hata ile Karşılaşıldı !';
             toast.error(message);
         } else {
             toast.error('Bilinmeyen Bir Hata ile Karşılaşıldı !');

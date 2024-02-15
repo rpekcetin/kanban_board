@@ -15,7 +15,7 @@ const index = () => {
   const [modal, setModal] = useState<boolean>(false)
   const dispatch = useDispatch()
   const navigation: NavigateFunction = useNavigate()
-  const { panels } = useSelector((state: ISelectorType) => state.PanelSlice)
+  const { panels } = useSelector((state: ISelectorType) => state?.PanelSlice)
 
   useEffect(() => {
     dispatch({
@@ -36,7 +36,7 @@ const index = () => {
       dispatch({
         type: PanelTypes.POST_PANELS,
         payload: {
-          name: values.name
+          name: values?.name
         }
       })
       formik.resetForm()
@@ -69,10 +69,10 @@ const index = () => {
         panels?.map((data: IPanel, index: number) => (
           <div className='cursor-pointer' key={`panel-card-${index}`}>
             <TaskCard>
-              <TrashIcon onClick={() => handleDelete(data._id)} className='h-5 w-5 absolute stroke-red-500 top-3 right-3 cursor-pointer z-2' />
-              <div onClick={() => navigation(`/${data._id}`)} className='w-full h-full text-center pt-10 pb-10'>
+              <TrashIcon onClick={() => handleDelete(data?._id)} className='h-5 w-5 absolute stroke-red-500 top-3 right-3 cursor-pointer z-2' />
+              <div onClick={() => navigation(`/${data?._id}`)} className='w-full h-full text-center pt-10 pb-10'>
                 <label className='cursor-pointer text-center text-lg font-bold uppercase'>
-                  {data.name}
+                  {data?.name}
                 </label>
               </div>
             </TaskCard>
@@ -87,7 +87,7 @@ const index = () => {
         onSubmit={formik.handleSubmit}
       >
         <div className=' p-6 mx-16'>
-          <Input label='Ad Giriniz' name='name' invalid={(formik.errors.name ? true : false) && formik.touched.name} error={formik.errors.name} onChange={formik.handleChange} />
+          <Input label='Ad Giriniz' name='name' invalid={(formik?.errors?.name ? true : false) && formik?.touched?.name} error={formik?.errors?.name} onChange={formik.handleChange} />
         </div>
       </Modal>
     </div >

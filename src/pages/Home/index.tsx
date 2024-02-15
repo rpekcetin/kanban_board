@@ -50,7 +50,7 @@ const Home: React.FC = () => {
         return true;
       }
       if (value instanceof File) {
-        return ["image/jpeg", "image/png", "image/webp"].includes(value.type);
+        return ["image/jpeg", "image/png", "image/webp"].includes(value?.type);
       }
       return true;
     })
@@ -83,10 +83,10 @@ const Home: React.FC = () => {
   })
 
   const handleDropDrag = (event: DropResult) => {
-    const fromCategoryId: number | undefined = Number(event.source.droppableId.replace('task-drop-', ''));
-    const toCategoryId: number | undefined = Number(event.destination?.droppableId.replace('task-drop-', ''));
-    const fromIndex: number | undefined = event.source.index;
-    const toIndex: number | undefined = event.destination?.index;
+    const fromCategoryId: number | undefined = Number(event?.source?.droppableId?.replace('task-drop-', ''));
+    const toCategoryId: number | undefined = Number(event?.destination?.droppableId?.replace('task-drop-', ''));
+    const fromIndex: number | undefined = event?.source?.index;
+    const toIndex: number | undefined = event?.destination?.index;
 
     if (typeof toCategoryId === 'undefined' || typeof toIndex === 'undefined' || typeof fromIndex === 'undefined') return
     dispatch({
@@ -110,12 +110,12 @@ const Home: React.FC = () => {
                 <div className="flex flex-col gap-y-3">
                   <div className="flex-1 mb-2 absolute top-0">
                     <label className="text-2xl text-gray-700 font-bold">
-                      {category.name}
+                      {category?.name}
                     </label>
                   </div>
                   <div className="flex gap-3 flex-col">
                     {category?.data?.map((task: ITaskCard, taskIndex: number) => (
-                      <Draggable draggableId={`task-${task._id}`} key={`task-${task._id}`} index={taskIndex}>
+                      <Draggable draggableId={`task-${task?._id}`} key={`task-${task?._id}`} index={taskIndex}>
                         {(provided) => (
                           <div
                             {...provided.dragHandleProps}
@@ -133,7 +133,7 @@ const Home: React.FC = () => {
                                   </div>
                                 </div>
                                 {
-                                  task.image ? (
+                                  task?.image ? (
                                     <div className={`w-full mt-3`}>
                                       <div className='w-full'>
                                         <div className="bg-no-repeat rounded-lg bg-cover bg-bottom w-full h-44" style={{ backgroundImage: `url(${application.api}/${task.image})` }} />
@@ -143,12 +143,12 @@ const Home: React.FC = () => {
                                 }
                                 <div className='mt-5 pb-4 w-full flex flex-row items-center justify-between'>
                                   <div className=''>
-                                    <div className="bg-no-repeat rounded-full bg-cover w-11 h-11" style={{ backgroundImage: `url('/image/profile.jpg')` }} />
+                                    <div className="bg-no-repeat rounded-full bg-cover w-11 h-11" style={{ backgroundImage: `url('/image/profile.webp')` }} />
                                   </div>
                                   <div className={`gap-1 flex items-center justify-end`}>
                                     <ClockIcon className='h-6 w-6 stroke-gray-600' />
                                     <p className='text-sm text-gray-600 font-semibold'>
-                                      {`${moment(task.startDate).format('DD')}-${moment(task.endDate).format('DD')} ${moment(task.endDate).format('MMM')}`}
+                                      {`${moment(task?.startDate).format('DD')}-${moment(task?.endDate).format('DD')} ${moment(task?.endDate).format('MMM')}`}
                                     </p>
                                   </div>
                                 </div>
@@ -158,7 +158,7 @@ const Home: React.FC = () => {
                         )}
                       </Draggable>
                     ))}
-                    {provided.placeholder}
+                    {provided?.placeholder}
                   </div>
                   <div>
                     <Button
@@ -187,19 +187,19 @@ const Home: React.FC = () => {
       >
         <div className="grid grid-cols-2 gap-x-5">
           <div className=''>
-            <Input label='Görev Adı' type="text" name='title' value={formik.values.title} invalid={(formik.errors.title ? true : false) && formik.touched.title} error={formik.errors.title} onChange={formik.handleChange} />
+            <Input label='Görev Adı' type="text" name='title' value={formik?.values?.title} invalid={(formik?.errors?.title ? true : false) && formik?.touched?.title} error={formik?.errors?.title} onChange={formik.handleChange} />
           </div>
           <div className=''>
-            <Input label='Açıklama' type="textarea" name='mission' value={formik.values.mission} invalid={(formik.errors.mission ? true : false) && formik.touched.mission} error={formik.errors.mission} onChange={formik.handleChange} />
+            <Input label='Açıklama' type="textarea" name='mission' value={formik?.values?.mission} invalid={(formik?.errors?.mission ? true : false) && formik?.touched?.mission} error={formik?.errors?.mission} onChange={formik.handleChange} />
           </div>
           <div className=''>
-            <Input label='Görev Başlangıç' type="date" name='startDate' value={formik.values.startDate} invalid={(formik.errors.startDate ? true : false) && formik.touched.startDate} error={formik.errors.startDate} onChange={(e) => formik.setFieldValue('startDate', moment(e.target.value).format('YYYY-MM-DD'))} />
+            <Input label='Görev Başlangıç' type="date" name='startDate' value={formik?.values?.startDate} invalid={(formik?.errors?.startDate ? true : false) && formik?.touched?.startDate} error={formik?.errors?.startDate} onChange={(e) => formik.setFieldValue('startDate', moment(e.target.value).format('YYYY-MM-DD'))} />
           </div>
           <div className=''>
-            <Input label='Görev Bitiş' type="date" name='endDate' value={formik.values.endDate} invalid={(formik.errors.endDate ? true : false) && formik.touched.endDate} error={formik.errors.endDate} onChange={(e) => formik.setFieldValue('startDate', moment(e.target.value).format('YYYY-MM-DD'))} />
+            <Input label='Görev Bitiş' type="date" name='endDate' value={formik?.values?.endDate} invalid={(formik?.errors?.endDate ? true : false) && formik?.touched?.endDate} error={formik?.errors?.endDate} onChange={(e) => formik.setFieldValue('startDate', moment(e.target.value).format('YYYY-MM-DD'))} />
           </div>
           <div className='mx-44 col-span-2 w-98'>
-            <Select label="Görev Türü" value={formik.values.status} invalid={(formik.errors.status ? true : false) && formik.touched.status} error={formik.errors.status} onChange={(e) => formik.setFieldValue('status', parseInt(e.target.value))} >
+            <Select label="Görev Türü" value={formik?.values?.status} invalid={(formik?.errors?.status ? true : false) && formik?.touched?.status} error={formik?.errors?.status} onChange={(e) => formik.setFieldValue('status', parseInt(e?.target?.value))} >
               <Options value={1}>
                 UX Design
               </Options>
@@ -227,9 +227,9 @@ const Home: React.FC = () => {
               )
             }
             <div className="hidden">
-              <Input label='Ek Resim' refImage={imageRef} type="file" name='image' invalid={(formik.errors.image ? true : false) && formik.touched.image} error={formik.errors.image} onChange={(event: ChangeEvent<HTMLInputElement>) => {
-                if (event.target.files && event.target.files.length > 0) {
-                  const file = event.target.files[0];
+              <Input label='Ek Resim' refImage={imageRef} type="file" name='image' invalid={(formik?.errors?.image ? true : false) && formik?.touched?.image} error={formik?.errors?.image} onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                if (event?.target?.files && event?.target?.files?.length > 0) {
+                  const file = event?.target?.files[0];
                   setSelectedImage(URL.createObjectURL(file))
                   formik.setFieldValue("image", file);
                 }

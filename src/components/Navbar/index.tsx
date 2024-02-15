@@ -13,8 +13,8 @@ const index = () => {
                     </label>
                 </div>
                 <div className='basis-9/12 gap-x-4 flex flex-row justify-end items-center'>
-                    <div className=' flex'>
-                        <img src='./image/profile.jpg' alt='profile' className='w-14 h-14 radius-full text-center bg-red-500' />
+                    <div className='flex'>
+                        <img src='./image/profile.webp' alt='profile' className='w-14 h-14 text-center' />
                     </div>
                     <div>
                         <div className='flex flex-col'>
@@ -25,7 +25,7 @@ const index = () => {
                             </div>
                             <div className='-mt-1'>
                                 <label className='text-xs'>
-                                   FrontEnd Developer
+                                    FrontEnd Developer
                                 </label>
                             </div>
                         </div>
