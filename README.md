@@ -1,46 +1,122 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Kanban Board
 
-## Available Scripts
+This is an example kanban board project. You can create tasks by adding a new panel and transfer the tasks to different columns by dragging them.
 
-In the project directory, you can run:
 
-### `npm start`
+## Getting Started
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+To run this project locally, clone the repository and install the dependencies:
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+```bash
+git clone https://github.com/rpekcetin/kanban_board.git
+cd kanban_board
+npm install
+npm start
+```
+## API Reference
 
-### `npm test`
+#### Get all category and tasks
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```http
+  GET /category/:panel_id
+```
 
-### `npm run build`
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `panel_id` | `string` | You can fetch all task data |
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+#### Post Task
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```http
+  POST /task/post
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+| Body | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `title`      | `string` | **Required**. Task title |
+| `panel_id`      | `string` | **Required**. ID of the panel to be added |
+| `mission`      | `string` | **Required**. Task description |
+| `categoryId`      | `string` | **Required**. ID of the category to be added |
+| `endDate`      | `Date` | **Required**. Task due date |
+| `startDate`      | `Date` | **Required**. Task start date |
+| `image`      | `File` | **Required**. Task image if you want to add |
+| `status`      | `string` | **Required**. Parameter indicating which category the task is in |
+| `position`      | `number` | **Required**. The order of the task in the column default value is 0 |
 
-### `npm run eject`
+#### Update Task Position
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+```http
+  PUT /task/update
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+| Body | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `data`      | `string` | **Required**. Sorting and resending all data of the added and removed categories |
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+#### Delete Task
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+```http
+  Delete /task/delete
+```
 
-## Learn More
+| Params | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `task_id`      | `string` | **Required**. ID of the task you want to delete|
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+#### Get all panels
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```http
+  GET /panel
+```
+
+#### Post Panel
+
+```http
+  POST /panel/post
+```
+
+| Body | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `name`      | `string` | **Required**. Enter panel name |
+
+#### Delete Panel
+
+```http
+  Delete /panel/delete
+```
+
+| Params | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `_id`      | `string` | **Required**. ID of the panel you want to delete|
+
+## Tech Stack
+
+**Client:** React, ReduxSaga, Redux ToolKit, Redux, TailwindCSS, react-beautiful-dnd
+
+**Server:** Node, Express
+
+**Deploy:** Render, Vercel
+
+
+## Screenshots
+
+
+**Add Panel**
+
+You can create a new panel from this model by clicking the add option in this area.
+
+![App Screenshot](https://rpekcetin.github.io/kanban_2.jpg)
+
+**Add Task**
+
+After creating a new panel and clicking inside, you can create a new task by clicking on the add new card under each column.
+
+![App Screenshot](https://rpekcetin.github.io/kanban_3.jpg)
+
+**Delete Task**
+
+Optionally, you can delete the selected card from the three dots on the cards.
+
+![App Screenshot](https://rpekcetin.github.io/kanban_1.jpg)
+
