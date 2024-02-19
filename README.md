@@ -83,7 +83,7 @@ npm start
 #### Delete Panel
 
 ```http
-  Delete /panel/delete
+  Delete /panel/delete/_id
 ```
 
 | Params | Type     | Description                       |
